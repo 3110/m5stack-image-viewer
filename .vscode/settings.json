@@ -1,0 +1,39 @@
+{
+    "editor.formatOnSave": true,
+    "C_Cpp.clang_format_style": "file",
+    "[cpp]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true,
+    },
+    "[markdown]": {
+        "editor.insertSpaces": false,
+    },
+    "[plaintext]": {
+        "editor.insertSpaces": false,
+        "editor.detectIndentation": false,
+        "editor.comments.insertSpace": false
+    },
+    "files.associations": {
+        "array": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "vector": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp"
+    },
+    "cSpell.words": [
+        "coreink",
+        "fastled",
+        "mbus",
+        "platformio",
+        "RFID",
+        "Struct"
+    ],
+    "markdownlint.config": {
+        "MD033": false, // allow Inline HTML
+        "MD041": false // First line in a file should be a top-level heading
+    }
+}
