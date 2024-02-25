@@ -15,21 +15,21 @@ M5Stackシリーズでファイルシステム（LittleFS）上にある画像�
 
 [PlatformIO IDE](https://platformio.org/platformio-ide)環境でコンパイルします。機種に合わせて環境を選択してください。
 
-| 機種            | 環境                            | 備考                 |
-| :-------------- | :-------------------------------| :------------------- |
-| M5Stack BASIC   | env:m5stack-basic-m5unified     |                      |
-| M5Stack Fire    | env:m5stack-fire-m5unified      |                      |
-| M5Go            | env:m5stack-m5go-m5unified      |                      |
-| M5Stack Core2   | env:m5stack-core2-m5unified     |                      |
-| M5Stack Core3   | env:m5stack-core3-m5unified     |                      |
-| M5Stick C       | env:m5stick-c-m5unified         |                      |
-| M5Stick C Plus  | env:m5stick-c-plus-m5unified    |                      |
-| M5Stick C Plus2 | env:m5stick-c-plus2-m5unified   |                      |
-| M5ATOM S3       | env:m5stack-atoms3-m5unified    |                      |
-| M5Dial          | env:m5stack-dial-m5unified      | 公式ライブラリを使用 |
-| M5Cardputer     | env:m5stack-cardputer-m5unified |                      |
-| CoreInk         | env:m5stack-coreink-m5unified   |                      |
-| M5Paper         | env:m5stack-paper-m5unified     |                      |
+| 機種            | 環境                  |
+| :-------------- | :---------------------|
+| M5Stack BASIC   | env:m5stack-basic     |
+| M5Stack Fire    | env:m5stack-fire      |
+| M5Go            | env:m5stack-m5go      |
+| M5Stack Core2   | env:m5stack-core2     |
+| M5Stack Core3   | env:m5stack-core3     |
+| M5Stick C       | env:m5stick-c         |
+| M5Stick C Plus  | env:m5stick-c-plus    |
+| M5Stick C Plus2 | env:m5stick-c-plus2   |
+| M5ATOM S3       | env:m5stack-atoms3    |
+| M5Dial          | env:m5stack-dial      |
+| M5Cardputer     | env:m5stack-cardputer |
+| CoreInk         | env:m5stack-coreink   |
+| M5Paper         | env:m5stack-paper     |
 
 ## 設定ファイル
 
