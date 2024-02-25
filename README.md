@@ -1,6 +1,6 @@
 [In English](README_en_US.md)
 
-# M5Stackシリーズ用イメージビュワー
+# M5Stackシリーズ用イメージビューワー
 
 M5Stackシリーズでファイルシステム（LittleFS）上にある画像を次々と表示するプログラムです。
 
