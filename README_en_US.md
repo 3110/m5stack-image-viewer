@@ -115,7 +115,7 @@ A file named `[model_name]_image_viewer_firmware_[version].bin` will be generate
 For settings related to the firmware being generated, please refer to the following items in the `image-viewer` section of the `platformio.ini` file:
 
 * Model name  
-  `custom_firmware_target`
+  `custom_firmware_target`  
   A string representing each model is defined for each environment.  
   Example: M5Stack Basic = m5basic
 * Firmware name  
