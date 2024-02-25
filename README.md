@@ -117,7 +117,7 @@ No image files found
 生成されるファームウェアの設定に関しては，`platformio.ini`ファイルの`image-viewer`セクションにある以下の項目を参照してください。
 
 * 機種名  
-  `custom_firmware_target`
+  `custom_firmware_target`  
   各機種を表す文字列が各環境ごとに定義されています。  
   例：M5Stack Basic = m5basic
 * ファームウェアの名前  
