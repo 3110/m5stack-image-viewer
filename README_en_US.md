@@ -1,111 +1,104 @@
-# Boilerplate Code for M5Stack in PlatformIO IDE Environment
+# Image Viewer for M5Stack Series
 
-The Boilerplate Code for M5Stack enables you to compile and execute your code immediately in [PlatformIO IDE](https://platformio.org/platformio-ide) Environment, just like writing `setup()` and `loop()` in [Arduino IDE](https://www.arduino.cc/en/software).
+This program displays images stored on the LittleFS file system of the M5Stack series devices one after another.
 
-## Supported Devices
+There are two display modes available:
 
-| Device Type     | Environment Name                                               | Notes                                                                                                                                                                        |
-| :-------------- | :------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| M5Stack BASIC   | env:m5stack-basic                                              |                                                                                                                                                                              |
-| M5Stack Fire    | env:m5stack-fire                                               |                                                                                                                                                                              |
-| M5Stack M5GO    | env:m5stack-m5go                                               |                                                                                                                                                                              |
-| M5Stack CORE2   | env:m5stack-core2                                              |                                                                                                                                                                              |
-| M5Stack CORES3  | env:m5stack-cores3 <br> env:m5stack-cores3-m5unified           | with the M5Stack's library<br>with [M5Unified](https://github.com/m5stack/M5Unified). USB CDC On Boot is enabled                                                             |
-| M5StickC        | env:m5stack-c                                                  |                                                                                                                                                                              |
-| M5StickC Plus   | env:m5stack-c-plus                                             |                                                                                                                                                                              |
-| M5ATOM Matrix   | env:m5stack-atom-matrix <br> env:m5stack-atom-matrix-m5unified | with the M5stack's library<br>with [M5Unified](https://github.com/m5stack/M5Unified)                                                                                         |
-| M5ATOM Lite     | env:m5stack-atom-lite <br> env:m5stack-atom-lite-m5unified     | with the M5stack's library<br>with [M5Unified](https://github.com/m5stack/M5Unified)                                                                                         |
-| M5ATOM Echo     | env:m5stack-atom-echo <br> env:m5stack-atom-echo-m5unified     | with the M5stack's library<br>with [M5Unified](https://github.com/m5stack/M5Unified)                                                                                         |
-| M5ATOM U        | env:m5stack-atom-u <br> env:m5stack-atom-u-m5unified           | with the M5stack's library<br>with [M5Unified](https://github.com/m5stack/M5Unified)                                                                                         |
-| M5ATOMS3        | env:m5stack-atoms3 <br> env:m5stack-atoms3-m5unified           | with the M5Stack's library<br>with [M5Unified](https://github.com/m5stack/M5Unified). USB CDC On Boot is enabled                                                             |
-| M5ATOMS3 Lite   | env:m5stack-atoms3-lite <br> env:m5stack-atoms3-lite-m5unified | with the M5Stack's library<br>with [M5Unified](https://github.com/m5stack/M5Unified). USB CDC On Boot is enabled                                                             |
-| M5ATOMS3 U      | env:m5stack-atoms3-u <br> env:m5stack-atoms3-u-m5unified       | with the M5Stack's library<br>with [M5Unified](https://github.com/m5stack/M5Unified). USB CDC On Boot is enabled                                                             |
-| M5Stack CoreInk | env:m5stack-core-ink                                           |                                                                                                                                                                              |
-| M5Stack Paper   | env:m5stack-paper                                              |                                                                                                                                                                              |
-| M5StampS3       | env:m5stack-stamps3 <br> env:m5stack-stamps3-m5unified         | without the M5Stack's library<br>with [M5Unified](https://github.com/m5stack/M5Unified). USB CDC On Boot is enabled                                                          |
-| M5Capsule       | env:m5stack-capsule-m5unified                                  | with [M5Unified](https://github.com/m5stack/M5Unified). USB CDC On Boot is enabled                                                                                           |
-| M5Dial          | env:m5stack-dial<br>env:m5stack-dial-m5unified                 | with the M5Stack's library(based on [M5Unified](https://github.com/m5stack/M5Unified))<br>with [M5Unified](https://github.com/m5stack/M5Unified). USB CDC On Boot is enabled |
+* Manual Mode  
+  Press the A button to switch and display images one by one.
+* Auto Mode  
+  Displays images at intervals (in milliseconds) specified in the configuration file. It can also display images at random intervals up to the specified display interval.
 
-## Preparation
+## How to Compile
 
-### Code Formatter Settings
+Compile in the [PlatformIO IDE](https://platformio.org/platformio-ide) environment. Please select the environment appropriate for your model.
 
-Since the `"C_Cpp.clang_format_style"` is set to `"file"` in the `.vscode/settings.json`, you can change the code formatter settings to your preferred settings in `.clang-format`.
+| Model            | Environment                        | Notes                 |
+| :--------------- | :----------------------------------| :--------------------- |
+| M5Stack BASIC    | env:m5stack-basic-m5unified        |                        |
+| M5Stack Fire     | env:m5stack-fire-m5unified         |                        |
+| M5Go             | env:m5stack-m5go-m5unified         |                        |
+| M5Stack Core2    | env:m5stack-core2-m5unified        |                        |
+| M5Stack Core3    | env:m5stack-core3-m5unified        |                        |
+| M5Stick C        | env:m5stick-c-m5unified            |                        |
+| M5Stick C Plus   | env:m5stick-c-plus-m5unified       |                        |
+| M5Stick C Plus2  | env:m5stick-c-plus2-m5unified      |                        |
+| M5ATOM S3        | env:m5stack-atoms3-m5unified       |                        |
+| M5Dial           | env:m5stack-dial-m5unified         | Uses official library  |
+| M5Cardputer      | env:m5stack-cardputer-m5unified    |                        |
+| CoreInk          | env:m5stack-coreink-m5unified      |                        |
+| M5Paper          | env:m5stack-paper-m5unified        |                        |
 
-### Configuration
+## Configuration File
 
-#### Connection Port
+The following settings can be configured in the `data/image-viewer.json` configuration file:
 
-Uncomment `upload_port` and `monitor_port` in the `[platformio]` section of `platformio.ini`, and change the value of `upload_port` to the actual port where your device is connected.
+* `AutoMode`  
+  Turn auto display mode on (`true`) or off (`false`).
+* `AutoModeInterval`  
+  Interval for switching images in auto display mode (milliseconds).
+* `AutoModeRandomized`  
+  Turn random interval switching mode on (`true`) or off (`false`).
 
-```platformio.ini
-upload_port = COM16
-monitor_port = ${env.upload_port}
+If the configuration file is missing, auto mode is off (`false`), the switch interval is 3 seconds (3000 milliseconds), and random interval switching mode is off (`false`).
+
+```json
+{
+  "AutoMode": false,
+  "AutoModeInterval": 3000,
+  "AutoModeRandomized": false
+}
 ```
 
-Note: From [PlatformIO IDE](https://platformio.org/platformio-ide) [v3.0.0](https://github.com/platformio/platformio-vscode-ide/releases/tag/v3.0.0), you can switch connection ports from the status bar.
+Turning on the random interval switching mode will switch images at random intervals between 0 milliseconds and the interval specified by `AutoModeInterval`.
 
-### Environment
+This configuration file will be uploaded to the device's file system along with the images during the "Uploading Images to Display" process in the next step.
 
-Set the appropriate environment name for your device using the "Switch PlatformIO Project Environment" option found in the VSCode status bar.
+## Uploading Images to Display
 
-You can also set the environment by explicitly specifying the `default_envs` in the `[platformio]` section of `platformio.ini`. Since there are already written, just uncomment one of them. In the example below, `m5stack-basic` is specified.
+Place image files (PNG, JPEG, BMP) in the `data` directory and upload them to the device using one of the following methods:
 
-```platformio.ini
-[platformio]
-default_envs = m5stack-basic
-; default-envs = m5stack-fire
-; default-envs = m5stack-m5go
-; default_envs = m5stack-core2
-; default_envs = m5stack-cores3
-; default_envs = m5stack-cores3-m5unified
-; default_envs = m5stick-c
-; default_envs = m5stick-c-plus
-; default_envs = m5stack-atom-matrix
-; default_envs = m5stack-atom-lite
-; default_envs = m5stack-atom-echo
-; default_envs = m5stack-atom-u
-; default_envs = m5stack-atom-matrix-m5unified
-; default_envs = m5stack-atom-lite-m5unified
-; default_envs = m5stack-atom-echo-m5unified
-; default_envs = m5stack-atom-u-m5unified
-; default_envs = m5stack-atoms3
-; default_envs = m5stack-atoms3-lite
-; default_envs = m5stack-atoms3-u
-; default_envs = m5stack-atoms3-m5unified
-; default_envs = m5stack-atoms3-lite-m5unified
-; default_envs = m5stack-atoms3-u-m5unified
-; default_envs = m5stack-coreink
-; default_envs = m5stack-paper
-; default_envs = m5stack-stamps3
-; default_envs = m5stack-stamps3-m5unified
-; default_envs = m5stack-capsule-m5unified
+* Select "Upload Filesystem Image" from the PlatformIO menu.  
+* Execute `pio run --target uploadfs` from the command line.
+
+All files placed in the `data` directory, including the `data/image-viewer.json` configuration file, will be uploaded to the device.
+
+## How to Run
+
+When the program is launched, it sequentially displays image files (PNG, JPEG, BMP) found in the file system. Normally, it starts in the mode specified in the configuration file. If the A button is pressed while starting, it switches to auto mode regardless of the settings.
+
+If an IMU is available on your device, the display orientation automatically changes to match the screen's orientation.
+
+Upon startup, the following is displayed. If there is no configuration file, the `Config:` information will not be shown.
+
+```text
+Image Viewer v1.0.0
+Config:
+ /image-viewer.json
+ AutoMode: false
+ Interval: 3000ms
+ Randomized: false
+Mode:
+ Manual, Auto or Auto(Forced)
+Image Files:
+ Image File 1
+ Image File 2
+ ...
+ Image File N
 ```
 
-### Third Party Libraries
+If no image files are found on the file system, the following message is displayed:
 
-If you want to use third party libraries, add them to the `lib_deps` in the `[env]` section of `platformio.ini`.
-
-```ini
-lib_deps =
-    fastled/FastLED
+```text
+Image Viewer v1.0.0
+Config:
+ /image-viewer.json
+ AutoMode: false
+ Interval: 3000ms
+ Randomized: false
+Mode:
+ Manual, Auto or Auto(Forced)
+No image files found
 ```
 
-### Writing Codes
-
-Write your code in the `setup()` and `loop()` in `main.cpp`. The `main.hpp` enables you to include the device-specific header files for your device.
-
-To improve readability because of the varying arguments for `M5.begin()`, I have defined the `M5_BEGIN` macro. Please refer to `main.hpp` for the specific definition. Furthermore, to accommodate the absence of `M5.update()` in the M5Stack's library for CoreS3, I have also defined the `M5_UPDATE` macro for seamless compatibility.
-
-Note: When using `SD.h` or `SPIFFS.h` with M5Unified, make sure to include them before the `#include "main.hpp"` statement.
-
-```c++
-// clang-format off
-#include <SPIFFS.h>
-#include "main.hpp"
-// clang-format on
-```
-
-### Upload to Devices
-
-Execute "PlatformIO: Upload" by clicking the right arrow icon located in the VSCode status bar.
+After displaying the list of images for a certain period (default is 3 seconds), the screen displays images according to the selected mode.

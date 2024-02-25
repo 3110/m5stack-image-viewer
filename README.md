@@ -1,114 +1,106 @@
 [In English](README_en_US.md)
 
-# PlatformIO IDE 向け M5Stack 定型コード環境
+# M5Stackシリーズ用イメージビュワー
 
-[Arduino IDE](https://www.arduino.cc/en/software) 環境と同じように [PlatformIO IDE](https://platformio.org/platformio-ide) 環境でも `setup()`と`loop()`の中身を書いてすぐにコンパイルして実行できます。
+M5Stackシリーズでファイルシステム（LittleFS）上にある画像を次々と表示するプログラムです。
 
-## 対応機種
+以下の2種類の表示方法があります。
 
-| 機種名          | 環境名                                                         | 備考                                                                                                                                                                |
-| :-------------- | :------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| M5Stack BASIC   | env:m5stack-basic                                              |                                                                                                                                                                     |
-| M5Stack Fire    | env:m5stack-fire                                               |                                                                                                                                                                     |
-| M5Stack M5GO    | env:m5stack-m5go                                               |                                                                                                                                                                     |
-| M5Stack CORE2   | env:m5stack-core2                                              |                                                                                                                                                                     |
-| M5Stack CORES3  | env:m5stack-cores3 <br> env:m5stack-cores3-m5unified           | 公式ライブラリを使用<br>[M5Unified](https://github.com/m5stack/M5Unified) を使用。USB CDC On Boot が有効                                                            |
-| M5StickC        | env:m5stack-c                                                  |                                                                                                                                                                     |
-| M5StickC Plus   | env:m5stack-c-plus                                             |                                                                                                                                                                     |
-| M5ATOM Matrix   | env:m5stack-atom-matrix <br> env:m5stack-atom-matrix-m5unified | 公式ライブラリを使用<br>[M5Unified](https://github.com/m5stack/M5Unified) を使用                                                                                    |
-| M5ATOM Lite     | env:m5stack-atom-lite <br> env:m5stack-atom-lite-m5unified     | 公式ライブラリを使用<br>[M5Unified](https://github.com/m5stack/M5Unified) を使用                                                                                    |
-| M5ATOM Echo     | env:m5stack-atom-echo <br> env:m5stack-atom-echo-m5unified     | 公式ライブラリを使用<br>[M5Unified](https://github.com/m5stack/M5Unified) を使用                                                                                    |
-| M5ATOM U        | env:m5stack-atom-u <br> env:m5stack-atom-u-m5unified           | 公式ライブラリを使用<br>[M5Unified](https://github.com/m5stack/M5Unified) を使用                                                                                    |
-| M5ATOMS3        | env:m5stack-atoms3 <br> env:m5stack-atoms3-m5unified           | 公式ライブラリを使用（[M5Unified](https://github.com/m5stack/M5Unified)ベース）。USB CDC On Boot が有効<br>[M5Unified](https://github.com/m5stack/M5Unified) を使用。USB CDC On Boot が有効                                                            |
-| M5ATOMS3 Lite   | env:m5stack-atoms3-lite <br> env:m5stack-atoms3-lite-m5unified | 公式ライブラリを使用（[M5Unified](https://github.com/m5stack/M5Unified)ベース）。USB CDC On Boot が有効<br>[M5Unified](https://github.com/m5stack/M5Unified) を使用。USB CDC On Boot が有効                                                            |
-| M5ATOMS3 U      | env:m5stack-atoms3-u <br> env:m5stack-atoms3-u-m5unified       | 公式ライブラリを使用（[M5Unified](https://github.com/m5stack/M5Unified)ベース）。USB CDC On Boot が有効<br>[M5Unified](https://github.com/m5stack/M5Unified) を使用。USB CDC On Boot が有効                                                            |
-| M5Stack CoreInk | env:m5stack-core-ink                                           |                                                                                                                                                                     |
-| M5Stack Paper   | env:m5stack-paper                                              |                                                                                                                                                                     |
-| M5StampS3       | env:m5stack-stamps3 <br> env:m5stack-stamps3-m5unified         | 公式ライブラリはなし<br>[M5Unified](https://github.com/m5stack/M5Unified) を使用。USB CDC On Boot が有効                                                            |
-| M5Capsule       | env:m5stack-capsule-m5unified                                  | [M5Unified](https://github.com/m5stack/M5Unified) を使用。USB CDC On Boot が有効                                                                                    |
-| M5Dial          | env:m5stack-dial <br> env:m5stack-dial-m5unified               | 公式ライブラリを使用（[M5Unified](https://github.com/m5stack/M5Unified)ベース）<br>[M5Unified](https://github.com/m5stack/M5Unified)を使用。USB CDC On Boot が有効  |
+* 手動（Manul）モード  
+  Aボタン（正順）・Cボタン（逆順）を押すたびに画像を切り替えて表示します。M5Dialの場合はダイヤルを左右（逆順・正順）に回すことで画像を切り替えます。
+* 自動（Auto）モード  
+  設定ファイルで指定した間隔（ミリ秒）で表示します。指定した表示間隔を最大値としたランダムの間隔で表示することもできます。
 
-## 事前準備
+## コンパイル方法
 
-### コード整形の設定
+[PlatformIO IDE](https://platformio.org/platformio-ide)環境でコンパイルします。機種に合わせて環境を選択してください。
 
-コードの整形は`.vscode/settings.json`で`"C_Cpp.clang_format_style": "file"`にしているため，`.clang-format`で設定できます。ご自身の好きな設定に変更してください。
+| 機種            | 環境                            | 備考                 |
+| :-------------- | :-------------------------------| :------------------- |
+| M5Stack BASIC   | env:m5stack-basic-m5unified     |                      |
+| M5Stack Fire    | env:m5stack-fire-m5unified      |                      |
+| M5Go            | env:m5stack-m5go-m5unified      |                      |
+| M5Stack Core2   | env:m5stack-core2-m5unified     |                      |
+| M5Stack Core3   | env:m5stack-core3-m5unified     |                      |
+| M5Stick C       | env:m5stick-c-m5unified         |                      |
+| M5Stick C Plus  | env:m5stick-c-plus-m5unified    |                      |
+| M5Stick C Plus2 | env:m5stick-c-plus2-m5unified   |                      |
+| M5ATOM S3       | env:m5stack-atoms3-m5unified    |                      |
+| M5Dial          | env:m5stack-dial-m5unified      | 公式ライブラリを使用 |
+| M5Cardputer     | env:m5stack-cardputer-m5unified |                      |
+| CoreInk         | env:m5stack-coreink-m5unified   |                      |
+| M5Paper         | env:m5stack-paper-m5unified     |                      |
 
-### 環境設定
+## 設定ファイル
 
-#### 接続ポートの設定
+設定ファイル`data/image-viewer.json`で以下を設定できます。
 
-`platformio.ini`の`[platformio]`セクションにある`upload_port`と`monitor_port`のコメントを外し，`upload_port`に設定するポートを実機が接続しているポートに変更します。
+* `AutoMode`  
+  自動表示モードのオン（`true`）・オフ（`false`）
+* `AutoModeInterval`  
+  自動表示モードのときの画像の切り替え間隔（ミリ秒）
+* `AutoModeRandomized`  
+  ランダム切り替え間隔モードのオン（`true`）・オフ（`false`）
 
-```platformio.ini
-upload_port = COM16
-monitor_port = ${env.upload_port}
+設定ファイルがない場合は，自動モードはオフ（`false`），切り替え間隔は 3 秒（3000 ミリ秒），ランダム切り替え間隔モードはオフ（`false`）になります。
+
+```json
+{
+  "AutoMode": false,
+  "AutoModeInterval": 3000,
+  "AutoModeRandomized": false
+}
 ```
 
-※PlatformIO IDE [v3.0.0](https://github.com/platformio/platformio-vscode-ide/releases/tag/v3.0.0)より，ステータスバーからポートの切り替えができるようになりました。
+ランダム切り替え間隔モードをオンにすると，0 ミリ秒から`AutoModeInterval`で指定したミリ秒の間のランダムな間隔で画像を切り替えます。
 
-#### 環境の設定
+この設定ファイルは次の「表示する画像のアップロード」の際に画像と一緒に実機のファイルシステムにアップロードされます。
 
-「Switch PlatformIO Project Environment」（VSCode のステータスバーにある）で機種に合った環境名を設定します。
+## 表示する画像のアップロード
 
-`platformio.ini`の`[platformio]`セクションで`default_envs`を明示的に指定することでも環境を設定できます（既に書いてあるので，いずれかのコメントを外す）。以下の例では`m5stack-basic`を指定しています。
+表示する画像ファイル（PNG，JPEG，BMP）を`data`ディレクトリに置き，以下のいずれかの方法で実機にアップロードします。
 
-```platformio.ini
-[platformio]
-default_envs = m5stack-basic
-; default-envs = m5stack-fire
-; default-envs = m5stack-m5go
-; default_envs = m5stack-core2
-; default_envs = m5stack-cores3
-; default_envs = m5stack-cores3-m5unified
-; default_envs = m5stick-c
-; default_envs = m5stick-c-plus
-; default_envs = m5stack-atom-matrix
-; default_envs = m5stack-atom-lite
-; default_envs = m5stack-atom-echo
-; default_envs = m5stack-atom-u
-; default_envs = m5stack-atom-matrix-m5unified
-; default_envs = m5stack-atom-lite-m5unified
-; default_envs = m5stack-atom-echo-m5unified
-; default_envs = m5stack-atom-u-m5unified
-; default_envs = m5stack-atoms3
-; default_envs = m5stack-atoms3-lite
-; default_envs = m5stack-atoms3-u
-; default_envs = m5stack-atoms3-m5unified
-; default_envs = m5stack-atoms3-lite-m5unified
-; default_envs = m5stack-atoms3-u-m5unified
-; default_envs = m5stack-coreink
-; default_envs = m5stack-paper
-; default_envs = m5stack-stamps3
-; default_envs = m5stack-stamps3-m5unified
-; default_envs = m5stack-capsule-m5unified
+* PlatformIO メニューから「Upload Filesystem Image」を選択する。  
+* コマンドラインから`pio run --target uploadfs`を実行する。
+
+このとき，設定ファイル`data/image-viewer.json`も含め，`data`ディレイクトリに置かれているファイルはすべて実機にアップロードされます。
+
+## 実行方法
+
+プログラムを起動すると，ファイルシステムにある画像ファイル（PNG，JPEG，BMP）を順に表示します。通常は設定ファイルで指定したモードで起動します。Aボタンを押しながら起動すると，設定にかかわらず自動モードになります。
+
+IMUが使える場合は，画面の向きに合わせて表示が自動的に切り替わります。
+
+起動すると以下の画面が表示されます。設定ファイルがない場合`Config:`の情報は表示されません。
+
+```text
+Image Viewer v1.0.0
+Config:
+ /image-viewer.json
+ AutoMode: false
+ Interval: 3000ms
+ Randomized: false
+Mode:
+ Manual, Auto or Auto(Forced)
+Image Files:
+ 画像ファイル1
+ 画像ファイル2
+ ...
+ 画像ファイルN
 ```
 
-### 外部ライブラリの追加
+ファイルシステム上に画像ファイルがない場合は，以下のように表示されます。
 
-外部ライブラリを使用する場合は，`[env]`セクションにある`lib_deps`に追加します。
-
-```ini
-lib_deps =
-    fastled/FastLED
+```text
+Image Viewer v1.0.0
+Config:
+ /image-viewer.json
+ AutoMode: false
+ Interval: 3000ms
+ Randomized: false
+Mode:
+ Manual, Auto or Auto(Forced)
+No image files found
 ```
 
-### コードの記述
-
-`main.cpp`の`setup()`，`loop()`にコードを書きます。必要なヘッダファイルは`main.hpp`で環境名に合わせて実機に合ったヘッダファイルをインクルードするようにしています。
-
-各機種で`M5.begin()`の引数がまちまちでわかりにくいので，`M5_BEGIN`というマクロを定義しています。定義内容に関しては`main.hpp`を参照してください。
-また，CoreS3の公式ライブラリでは`M5.update()`が定義されていないので，各機種共通で扱えるように`M5_UPDATE`というマクロで吸収しています。
-
-注意：M5Unified で`SD.h`や`SPIFFS.h`を使用する場合は，`#include "main.hpp"`より前に入れてください。
-
-```c++
-// clang-format off
-#include <SPIFFS.h>
-#include "main.hpp"
-// clang-format on
-```
-
-### 実機へのアップロード
-
-PlatformIO: Upload（VSCode のステータスバーにある → ボタン）を実行します。
+画面に画像一覧が表示されてから一定時間（デフォルトは 3 秒）が経過すると表示モードに応じて画面に画像が表示されます。
