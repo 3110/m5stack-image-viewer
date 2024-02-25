@@ -102,3 +102,28 @@ No image files found
 ```
 
 After displaying the list of images for a certain period (default is 3 seconds), the screen displays images according to the selected mode.
+
+## How to Create Custom Firmware
+
+To generate a custom firmware file for distribution, you can use either of the following methods:
+
+* Select "Custom/Generate User Custom" from the PlatformIO menu.
+* Execute `pio run --target firmware` from the command line.
+
+A file named `[model_name]_image_viewer_firmware_[version].bin` will be generated in the `firmware` directory.
+
+For settings related to the firmware being generated, please refer to the following items in the `image-viewer` section of the `platformio.ini` file:
+
+* Model name  
+  `custom_firmware_target`
+  A string representing each model is defined for each environment.  
+  Example: M5Stack Basic = m5basic
+* Firmware name  
+  `custom_firmware_name` (Default: `image_viewer`)
+* File name containing the firmware version  
+  `custom_firmware_version_file` (Default: `ImageViewer.cpp`)  
+  Extracts the value of `X.Y.Z` from the code written as `"vX.Y.Z"`.
+* Firmware extension (dot not required)  
+  `custom_firmware_suffix` (Default: `bin`)
+* Destination directory  
+  `custom_firmware_dir` (Default: `firmware`)

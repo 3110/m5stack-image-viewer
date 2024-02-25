@@ -60,7 +60,7 @@ M5Stackシリーズでファイルシステム（LittleFS）上にある画像�
 
 表示する画像ファイル（PNG，JPEG，BMP）を`data`ディレクトリに置き，以下のいずれかの方法で実機にアップロードします。
 
-* PlatformIO メニューから「Upload Filesystem Image」を選択する。  
+* PlatformIO メニューから「Upload Filesystem Image」を選択する。
 * コマンドラインから`pio run --target uploadfs`を実行する。
 
 このとき，設定ファイル`data/image-viewer.json`も含め，`data`ディレイクトリに置かれているファイルはすべて実機にアップロードされます。
@@ -104,3 +104,28 @@ No image files found
 ```
 
 画面に画像一覧が表示されてから一定時間（デフォルトは 3 秒）が経過すると表示モードに応じて画面に画像が表示されます。
+
+## 独自ファームウェアの作成方法
+
+配布用の独自ファームウェアファイルを生成するには，以下のいずれかの方法で生成できます。
+
+* PlatformIO メニューから「Custom/Generate User Custom」を選択する。
+* コマンドラインから`pio run --target firmware`を実行する。
+
+`firmware`ディレクトリに`[機種名]_[名前]_firmware_[バージョン].bin`ファイルが生成されます。
+
+生成されるファームウェアの設定に関しては，`platformio.ini`ファイルの`image-viewer`セクションにある以下の項目を参照してください。
+
+* 機種名  
+  `custom_firmware_target`
+  各機種を表す文字列が各環境ごとに定義されています。  
+  例：M5Stack Basic = m5basic
+* ファームウェアの名前  
+  `custom_firmware_name`（初期値：`image_viewer`）
+* ファームウェアのバージョンが書かれているファイル名  
+  `custom_firmware_version_file` （初期値：`ImageViewer.cpp`）  
+  ソースコードの書かれている`"vX.Y.Z"`から`X.Y.Z`の値を抽出します。
+* ファームウェアの拡張子（ドットは不要）  
+  `custom_firmware_suffix`（初期値：`bin`）
+* 生成先ディレクトリ  
+  `custom_firmware_dir`（初期値：`firmware`）
