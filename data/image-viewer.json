@@ -1,5 +1,6 @@
 {
   "AutoMode": false,
   "AutoModeInterval": 3000,
-  "AutoModeRandomized": false
+  "AutoModeRandomized": false,
+  "AutoRotation": true
 }
