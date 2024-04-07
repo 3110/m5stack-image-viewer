@@ -85,9 +85,9 @@ Config:
  Randomized: false
  AutoRotation: true
 Mode:
- Manual, Auto or Auto(Forced)
+ Manual, Auto, or Auto(Forced)
 Rotation:
- Auto, No, No(IMU disabled)
+ Auto, No, or No(IMU disabled)
 Image Files:
  画像ファイル1
  画像ファイル2
@@ -106,9 +106,9 @@ Config:
  Randomized: false
  AutoRotation: true
 Mode:
- Manual, Auto or Auto(Forced)
+ Manual, Auto, or Auto(Forced)
 Rotation:
- Auto, No, No(IMU disabled)
+ Auto, No, or No(IMU disabled)
 No image files found
 ```
 
