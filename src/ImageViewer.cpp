@@ -320,14 +320,19 @@ bool ImageViewer::parse(const char* config) {
         M5.Lcd.println(" E: parse");
         return false;
     }
+    if (o.hasOwnProperty(KEY_AUTO_MODE)) {
     this->_isAutoMode = (bool)o[KEY_AUTO_MODE];
+    }
     M5.Lcd.printf(" AutoMode: %s", this->_isAutoMode ? "true" : "false");
     M5.Lcd.println();
+    if (o.hasOwnProperty(KEY_AUTO_MODE_INTERVAL)) {
     this->_autoModeInterval = (uint32_t)o[KEY_AUTO_MODE_INTERVAL];
+    }
     M5.Lcd.printf(" Interval: %dms", this->_autoModeInterval);
     M5.Lcd.println();
     if (o.hasOwnProperty(KEY_AUTO_MODE_RANDOMIZED)) {
         this->_isAutoModeRandomized = (bool)o[KEY_AUTO_MODE_RANDOMIZED];
+    }
         M5.Lcd.printf(" Randomized: %s",
                       this->_isAutoModeRandomized ? "true" : "false");
         M5.Lcd.println();
