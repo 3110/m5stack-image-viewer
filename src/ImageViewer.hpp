@@ -22,12 +22,14 @@ public:
     static const char* KEY_AUTO_MODE;
     static const char* KEY_AUTO_MODE_INTERVAL;
     static const char* KEY_AUTO_MODE_RANDOMIZED;
+    static const char* KEY_AUTO_ROTATION;
 
     static const size_t MAX_IMAGE_FILES = 50;
     static const bool DEFAULT_AUTO_MODE = false;
     static const uint32_t DEFAULT_START_INTERVAL_MS = 3000;
     static const uint32_t DEFAULT_AUTO_MODE_INTERVAL_MS = 3000;
     static const bool DEFAULT_AUTO_MODE_RANDOMIZED = false;
+    static const bool DEFAULT_AUTO_ROTATION = true;
 
 #if defined(ARDUINO_M5STACK_CARDPUTER)
     static const Orientation DEFAULT_ORIENTATION = OrientationRight;
@@ -41,7 +43,8 @@ public:
     ImageViewer(Orientation orientation = DEFAULT_ORIENTATION,
                 bool isAutoMode = DEFAULT_AUTO_MODE,
                 uint32_t autoModeInterval = DEFAULT_AUTO_MODE_INTERVAL_MS,
-                bool isAutoModeRandomize = DEFAULT_AUTO_MODE_RANDOMIZED);
+                bool isAutoModeRandomize = DEFAULT_AUTO_MODE_RANDOMIZED,
+                bool isAutoRotation = DEFAULT_AUTO_ROTATION);
     virtual ~ImageViewer(void);
 
     virtual bool begin(const int bgColor = TFT_WHITE);
@@ -65,6 +68,7 @@ private:
     bool _isAutoMode;
     uint32_t _autoModeInterval;
     bool _isAutoModeRandomized;
+    bool _isAutoRotation;
 
     String _imageFiles[MAX_IMAGE_FILES];
     size_t _nImageFiles;

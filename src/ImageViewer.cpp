@@ -65,12 +65,13 @@ inline int32_t getDirection(void) {
 #include <Arduino_JSON.h>
 #include <string.h>
 
-const char* ImageViewer::VERSION = "v1.0.0";
+const char* ImageViewer::VERSION = "v1.0.2";
 
 const char* ImageViewer::DEFAULT_CONFIG_NAME = "image-viewer.json";
 const char* ImageViewer::KEY_AUTO_MODE = "AutoMode";
 const char* ImageViewer::KEY_AUTO_MODE_INTERVAL = "AutoModeInterval";
 const char* ImageViewer::KEY_AUTO_MODE_RANDOMIZED = "AutoModeRandomized";
+const char* ImageViewer::KEY_AUTO_ROTATION = "AutoRotation";
 
 const float ImageViewer::GRAVITY_THRESHOLD = 0.9F;
 const String ImageViewer::ROOT_DIR("/");
@@ -82,11 +83,13 @@ static const char* EXT_BMP = ".bmp";
 static const char* EXT_PNG = ".png";
 
 ImageViewer::ImageViewer(Orientation orientation, bool isAutoMode,
-                         uint32_t autoModeInterval, bool isAutoModeRandomized)
+                         uint32_t autoModeInterval, bool isAutoModeRandomized,
+                         bool isAutoRotation)
     : _orientation(orientation),
       _isAutoMode(isAutoMode),
       _autoModeInterval(autoModeInterval),
-      _isAutoModeRandomized(),
+      _isAutoModeRandomized(isAutoModeRandomized),
+      _isAutoRotation(isAutoRotation),
       _imageFiles{""},
       _nImageFiles(0),
       _pos(0),
@@ -101,17 +104,7 @@ ImageViewer::~ImageViewer(void) {
 bool ImageViewer::begin(int bgColor) {
     M5_BEGIN();
 
-    if (M5.Imu.isEnabled() &&
-        (M5.getBoard() == m5::board_t::board_M5Stack ||
-         M5.getBoard() == m5::board_t::board_M5StackCoreS3 ||
-         M5.getBoard() == m5::board_t::board_M5StackCore2)) {
-        M5.Imu.setAxisOrder(m5::IMU_Class::axis_y_pos,
-                            m5::IMU_Class::axis_x_neg,
-                            m5::IMU_Class::axis_z_pos);
-    }
-
     M5.Lcd.setRotation(this->_orientation);
-    updateOrientation();
 
     if (!IV_FS.begin(FORMAT_FS_IF_FAILED)) {
         M5.Lcd.println("Failed to mount File System");
@@ -124,6 +117,7 @@ bool ImageViewer::begin(int bgColor) {
     if (!parse()) {
         return false;
     }
+
     M5_UPDATE();
     M5.Lcd.println("Mode:");
     if (M5.BtnA.isPressed()) {
@@ -132,13 +126,35 @@ bool ImageViewer::begin(int bgColor) {
     } else {
         M5.Lcd.println(this->_isAutoMode ? " Auto" : " Manual");
     }
-    delay(DEFAULT_START_INTERVAL_MS);
 
+    M5.Lcd.println("Rotation:");
+    if (this->_isAutoRotation) {
+        if (!M5.Imu.isEnabled()) {
+            this->_isAutoRotation = false;
+            M5.Lcd.println(" No(IMU disabled)");
+        } else {
+            M5.Lcd.println(" Auto");
+        }
+    } else {
+        M5.Lcd.println(" No");
+    }
+    if (this->_isAutoRotation) {
+        if (M5.getBoard() == m5::board_t::board_M5Stack ||
+            M5.getBoard() == m5::board_t::board_M5StackCoreS3 ||
+            M5.getBoard() == m5::board_t::board_M5StackCore2) {
+            M5.Imu.setAxisOrder(m5::IMU_Class::axis_y_pos,
+                                m5::IMU_Class::axis_x_neg,
+                                m5::IMU_Class::axis_z_pos);
+        }
+        updateOrientation();
+    }
+
+    delay(DEFAULT_START_INTERVAL_MS);
     if (!setImageFileList()) {
         return false;
     }
-    delay(DEFAULT_START_INTERVAL_MS);
 
+    delay(DEFAULT_START_INTERVAL_MS);
     M5.Lcd.clear();
     M5.Lcd.fillScreen(bgColor);
 
@@ -151,7 +167,7 @@ bool ImageViewer::begin(int bgColor) {
 bool ImageViewer::update(void) {
     M5_UPDATE();
 
-    if (updateOrientation(GRAVITY_THRESHOLD)) {
+    if (this->_isAutoRotation && updateOrientation(GRAVITY_THRESHOLD)) {
         showImage(this->_imageFiles, this->_pos);
     }
 
@@ -320,17 +336,27 @@ bool ImageViewer::parse(const char* config) {
         M5.Lcd.println(" E: parse");
         return false;
     }
-    this->_isAutoMode = (bool)o[KEY_AUTO_MODE];
+    if (o.hasOwnProperty(KEY_AUTO_MODE)) {
+        this->_isAutoMode = (bool)o[KEY_AUTO_MODE];
+    }
     M5.Lcd.printf(" AutoMode: %s", this->_isAutoMode ? "true" : "false");
     M5.Lcd.println();
-    this->_autoModeInterval = (uint32_t)o[KEY_AUTO_MODE_INTERVAL];
+    if (o.hasOwnProperty(KEY_AUTO_MODE_INTERVAL)) {
+        this->_autoModeInterval = (uint32_t)o[KEY_AUTO_MODE_INTERVAL];
+    }
     M5.Lcd.printf(" Interval: %dms", this->_autoModeInterval);
     M5.Lcd.println();
     if (o.hasOwnProperty(KEY_AUTO_MODE_RANDOMIZED)) {
         this->_isAutoModeRandomized = (bool)o[KEY_AUTO_MODE_RANDOMIZED];
-        M5.Lcd.printf(" Randomized: %s",
-                      this->_isAutoModeRandomized ? "true" : "false");
-        M5.Lcd.println();
     }
+    M5.Lcd.printf(" Randomized: %s",
+                  this->_isAutoModeRandomized ? "true" : "false");
+    M5.Lcd.println();
+    if (o.hasOwnProperty(KEY_AUTO_ROTATION)) {
+        this->_isAutoRotation = (bool)o[KEY_AUTO_ROTATION];
+    }
+    M5.Lcd.printf(" AutoRotation: %s",
+                  this->_isAutoRotation ? "true" : "false");
+    M5.Lcd.println();
     return true;
 }

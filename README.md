@@ -41,6 +41,8 @@ M5Stackシリーズでファイルシステム（LittleFS）上にある画像�
   自動表示モードのときの画像の切り替え間隔（ミリ秒）
 * `AutoModeRandomized`  
   ランダム切り替え間隔モードのオン（`true`）・オフ（`false`）
+* `AutoRotation`
+  IMUを内蔵している機種で表示を自動的に向きに追従させるか（`true`）・追従させないか（`false`）
 
 設定ファイルがない場合は，自動モードはオフ（`false`），切り替え間隔は 3 秒（3000 ミリ秒），ランダム切り替え間隔モードはオフ（`false`）になります。
 
@@ -48,7 +50,8 @@ M5Stackシリーズでファイルシステム（LittleFS）上にある画像�
 {
   "AutoMode": false,
   "AutoModeInterval": 3000,
-  "AutoModeRandomized": false
+  "AutoModeRandomized": false,
+  "AutoRotation": true
 }
 ```
 
@@ -80,8 +83,11 @@ Config:
  AutoMode: false
  Interval: 3000ms
  Randomized: false
+ AutoRotation: true
 Mode:
- Manual, Auto or Auto(Forced)
+ Manual, Auto, or Auto(Forced)
+Rotation:
+ Auto, No, or No(IMU disabled)
 Image Files:
  画像ファイル1
  画像ファイル2
@@ -98,8 +104,11 @@ Config:
  AutoMode: false
  Interval: 3000ms
  Randomized: false
+ AutoRotation: true
 Mode:
- Manual, Auto or Auto(Forced)
+ Manual, Auto, or Auto(Forced)
+Rotation:
+ Auto, No, or No(IMU disabled)
 No image files found
 ```
 

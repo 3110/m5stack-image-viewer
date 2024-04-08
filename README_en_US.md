@@ -39,6 +39,9 @@ The following settings can be configured in the `data/image-viewer.json` configu
   Interval for switching images in auto display mode (milliseconds).
 * `AutoModeRandomized`  
   Turn random interval switching mode on (`true`) or off (`false`).
+* `AutoRotation`
+  Turn automatically adjusting the display orientation on (`true`) or off (`false`) for IMU included devices.
+
 
 If the configuration file is missing, auto mode is off (`false`), the switch interval is 3 seconds (3000 milliseconds), and random interval switching mode is off (`false`).
 
@@ -46,7 +49,8 @@ If the configuration file is missing, auto mode is off (`false`), the switch int
 {
   "AutoMode": false,
   "AutoModeInterval": 3000,
-  "AutoModeRandomized": false
+  "AutoModeRandomized": false,
+  "AutoRotation": true
 }
 ```
 
@@ -78,8 +82,11 @@ Config:
  AutoMode: false
  Interval: 3000ms
  Randomized: false
+ AutoRotation: true
 Mode:
- Manual, Auto or Auto(Forced)
+ Manual, Auto, or Auto(Forced)
+Rotation:
+ Auto, No, or No(IMU disabled)
 Image Files:
  Image File 1
  Image File 2
@@ -96,8 +103,11 @@ Config:
  AutoMode: false
  Interval: 3000ms
  Randomized: false
+ AutoRotation: true
 Mode:
- Manual, Auto or Auto(Forced)
+ Manual, Auto, or Auto(Forced)
+Rotation:
+ Auto, No, or No(IMU disabled)
 No image files found
 ```
 
