@@ -3,13 +3,17 @@
 #if defined(ARDUINO_M5STACK_DIAL)
 #include "M5DialEncoder.hpp"
 
+const int32_t TEXT_AREA_X = 35;
+const int32_t TEXT_AREA_Y = 35;
+const int32_t TEXT_AREA_WIDTH = 170;
+const int32_t TEXT_AREA_HEIGHT = 170;
+
 static M5DialEncoder encoder;
 static int16_t prev_dial_pos = 0;
 
 inline void M5_BEGIN(m5::M5Unified::config_t cfg) {
     M5.begin();
     encoder.begin();
-    M5.Lcd.setCursor(56, 60);
 }
 
 inline void M5_BEGIN(void) {
@@ -33,6 +37,23 @@ inline int16_t getDirection(void) {
         return 0;
     }
 }
+
+inline int32_t getTextAreaX(void) {
+    return TEXT_AREA_X;
+}
+
+inline int32_t getTextAreaY(void) {
+    return TEXT_AREA_Y;
+}
+
+inline int32_t getTextAreaWidth(void) {
+    return TEXT_AREA_WIDTH;
+}
+
+inline int32_t getTextAreaHeight(void) {
+    return TEXT_AREA_HEIGHT;
+}
+
 #else
 inline void M5_BEGIN(m5::M5Unified::config_t cfg) {
     M5.begin(cfg);
@@ -60,12 +81,28 @@ inline int32_t getDirection(void) {
         return 0;
     }
 }
+
+inline int32_t getTextAreaX(void) {
+    return 0;
+}
+
+inline int32_t getTextAreaY(void) {
+    return 0;
+}
+
+inline int32_t getTextAreaWidth(void) {
+    return M5.Lcd.width();
+}
+
+inline int32_t getTextAreaHeight(void) {
+    return M5.Lcd.height();
+}
 #endif
 
 #include <Arduino_JSON.h>
 #include <string.h>
 
-const char* ImageViewer::VERSION = "v1.0.2";
+const char* ImageViewer::VERSION = "v1.0.3";
 
 const char* ImageViewer::DEFAULT_CONFIG_NAME = "image-viewer.json";
 const char* ImageViewer::KEY_AUTO_MODE = "AutoMode";
@@ -105,6 +142,11 @@ bool ImageViewer::begin(int bgColor) {
     M5_BEGIN();
 
     M5.Lcd.setRotation(this->_orientation);
+
+    M5.Lcd.setTextScroll(true);
+    M5.Lcd.setCursor(getTextAreaX(), getTextAreaY());
+    M5.Lcd.setScrollRect(getTextAreaX(), getTextAreaY(), getTextAreaWidth(),
+                         getTextAreaHeight());
 
     if (!IV_FS.begin(FORMAT_FS_IF_FAILED)) {
         M5.Lcd.println("Failed to mount File System");
@@ -154,6 +196,9 @@ bool ImageViewer::begin(int bgColor) {
         return false;
     }
 
+    M5.Lcd.clearScrollRect();
+    M5.Lcd.setCursor(0, 0);
+
     delay(DEFAULT_START_INTERVAL_MS);
     M5.Lcd.clear();
     M5.Lcd.fillScreen(bgColor);
@@ -161,6 +206,7 @@ bool ImageViewer::begin(int bgColor) {
     if (!this->_isAutoMode) {
         showImage(this->_imageFiles, this->_pos);
     }
+
     return true;
 }
 
@@ -217,6 +263,7 @@ bool ImageViewer::setImageFileList(const String& path) {
     for (size_t c = 0; c < this->_nImageFiles; ++c) {
         M5.Lcd.print(" ");
         M5.Lcd.println(this->_imageFiles[c]);
+        delay(FILE_LIST_DISPLAY_INTERVAL_MS);
     }
     return true;
 }
