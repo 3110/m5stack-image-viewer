@@ -263,6 +263,7 @@ bool ImageViewer::setImageFileList(const String& path) {
     for (size_t c = 0; c < this->_nImageFiles; ++c) {
         M5.Lcd.print(" ");
         M5.Lcd.println(this->_imageFiles[c]);
+        delay(FILE_LIST_DISPLAY_INTERVAL_MS);
     }
     return true;
 }

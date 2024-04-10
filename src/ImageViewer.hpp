@@ -30,6 +30,7 @@ public:
     static const uint32_t DEFAULT_AUTO_MODE_INTERVAL_MS = 3000;
     static const bool DEFAULT_AUTO_MODE_RANDOMIZED = false;
     static const bool DEFAULT_AUTO_ROTATION = true;
+    static const uint32_t FILE_LIST_DISPLAY_INTERVAL_MS = 100;
 
 #if defined(ARDUINO_M5STACK_CARDPUTER)
     static const Orientation DEFAULT_ORIENTATION = OrientationRight;
