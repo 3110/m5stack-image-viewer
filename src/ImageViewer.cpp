@@ -12,7 +12,7 @@ static M5DialEncoder encoder;
 static int16_t prev_dial_pos = 0;
 
 inline void M5_BEGIN(m5::M5Unified::config_t cfg) {
-    M5.begin();
+    M5.begin(cfg);
     encoder.begin();
 }
 
