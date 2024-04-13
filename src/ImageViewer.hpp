@@ -8,13 +8,28 @@
 
 class ImageViewer {
 public:
-    enum Orientation
-    {
-        OrientationNormal = 0,
-        OrientationRight,
-        OrientationUpsideDown,
-        OrientationLeft,
-    };
+    inline const char* getOrientationString(uint8_t rotation) {
+        switch (rotation) {
+            case 0:
+                return "CW_0";
+            case 1:
+                return "CW_90";
+            case 2:
+                return "CW_180";
+            case 3:
+                return "CW_270";
+            case 4:
+                return "CCW_0";
+            case 5:
+                return "CCW_90";
+            case 6:
+                return "CCW_180";
+            case 7:
+                return "CCW_270";
+            default:
+                return "Unknown";
+        }
+    }
 
     static const char* VERSION;
 
@@ -23,6 +38,7 @@ public:
     static const char* KEY_AUTO_MODE_INTERVAL;
     static const char* KEY_AUTO_MODE_RANDOMIZED;
     static const char* KEY_AUTO_ROTATION;
+    static const char* KEY_ORIENTATION;
 
     static const size_t MAX_IMAGE_FILES = 50;
     static const bool DEFAULT_AUTO_MODE = false;
@@ -32,17 +48,10 @@ public:
     static const bool DEFAULT_AUTO_ROTATION = true;
     static const uint32_t FILE_LIST_DISPLAY_INTERVAL_MS = 100;
 
-#if defined(ARDUINO_M5STACK_CARDPUTER)
-    static const Orientation DEFAULT_ORIENTATION = OrientationRight;
-#else
-    static const Orientation DEFAULT_ORIENTATION = OrientationNormal;
-#endif
-
     static const float GRAVITY_THRESHOLD;
     static const String ROOT_DIR;
 
-    ImageViewer(Orientation orientation = DEFAULT_ORIENTATION,
-                bool isAutoMode = DEFAULT_AUTO_MODE,
+    ImageViewer(bool isAutoMode = DEFAULT_AUTO_MODE,
                 uint32_t autoModeInterval = DEFAULT_AUTO_MODE_INTERVAL_MS,
                 bool isAutoModeRandomize = DEFAULT_AUTO_MODE_RANDOMIZED,
                 bool isAutoRotation = DEFAULT_AUTO_ROTATION);
@@ -61,11 +70,11 @@ protected:
     virtual bool isPng(const char* filename) const;
     virtual bool isBmp(const char* filename) const;
     virtual bool isImageFile(const File& f) const;
-    virtual Orientation detectOrientation(float threshold);
+    virtual uint8_t detectOrientation(float threshold);
     virtual bool parse(const char* config = DEFAULT_CONFIG_NAME);
 
 private:
-    Orientation _orientation;
+    uint8_t _orientation;
     bool _isAutoMode;
     uint32_t _autoModeInterval;
     bool _isAutoModeRandomized;
