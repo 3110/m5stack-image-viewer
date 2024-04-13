@@ -91,13 +91,14 @@ If an IMU is available on your device, the display orientation automatically cha
 Upon startup, the following is displayed. If there is no configuration file, the `Config:` information will not be shown.
 
 ```text
-Image Viewer v1.0.3
+Image Viewer v1.0.4
 Config:
  /image-viewer.json
  AutoMode: false
  Interval: 3000ms
  Randomized: false
  AutoRotation: true
+ Orientation: CW_0, CW_90, CW_180, CW_270, CCW_0, CCW_90, CCW_180, or CCW_270
 Mode:
  Manual, Auto, or Auto(Forced)
 Rotation:
@@ -112,13 +113,14 @@ Image Files:
 If no image files are found on the file system, the following message is displayed:
 
 ```text
-Image Viewer v1.0.3
+Image Viewer v1.0.4
 Config:
  /image-viewer.json
  AutoMode: false
  Interval: 3000ms
  Randomized: false
  AutoRotation: true
+ Orientation: CW_0, CW_90, CW_180, CW_270, CCW_0, CCW_90, CCW_180, or CCW_270
 Mode:
  Manual, Auto, or Auto(Forced)
 Rotation:
