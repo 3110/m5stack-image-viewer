@@ -13,21 +13,23 @@ There are two display modes available:
 
 Compile in the [PlatformIO IDE](https://platformio.org/platformio-ide) environment. Please select the environment appropriate for your model.
 
-| Model            | Environment              |
-| :--------------- | :------------------------|
-| M5Stack BASIC    | env:m5stack-basic        |
-| M5Stack Fire     | env:m5stack-fire         |
-| M5Go             | env:m5stack-m5go         |
-| M5Stack Core2    | env:m5stack-core2        |
-| M5Stack Core3    | env:m5stack-core3        |
-| M5Stick C        | env:m5stick-c            |
-| M5Stick C Plus   | env:m5stick-c-plus       |
-| M5Stick C Plus2  | env:m5stick-c-plus2      |
-| M5ATOM S3        | env:m5stack-atoms3       |
-| M5Dial           | env:m5stack-dial         |
-| M5Cardputer      | env:m5stack-cardputer    |
-| CoreInk          | env:m5stack-coreink      |
-| M5Paper          | env:m5stack-paper        |
+The default display orientation is different for each model. M5Dial is originally set to 0, but this program sets the orientation to 1 for this model.
+
+| Model            | Environment              | Default Orientation |
+| :--------------- | :------------------------| :------------------ |
+| M5Stack BASIC    | env:m5stack-basic        | 1                   |
+| M5Stack Fire     | env:m5stack-fire         | 1                   |
+| M5Go             | env:m5stack-m5go         | 1                   |
+| M5Stack Core2    | env:m5stack-core2        | 1                   |
+| M5Stack Core3    | env:m5stack-core3        | 1                   |
+| M5Stick C        | env:m5stick-c            | 0                   |
+| M5Stick C Plus   | env:m5stick-c-plus       | 0                   |
+| M5Stick C Plus2  | env:m5stick-c-plus2      | 0                   |
+| M5ATOM S3        | env:m5stack-atoms3       | 0                   |
+| M5Dial           | env:m5stack-dial         | 1                   |
+| M5Cardputer      | env:m5stack-cardputer    | 1                   |
+| CoreInk          | env:m5stack-coreink      | 0                   |
+| M5Paper          | env:m5stack-paper        | 1                   |
 
 ## Configuration File
 
@@ -41,9 +43,22 @@ The following settings can be configured in the `data/image-viewer.json` configu
   Turn random interval switching mode on (`true`) or off (`false`).
 * `AutoRotation`
   Turn automatically adjusting the display orientation on (`true`) or off (`false`) for IMU included devices.
+* `Orientation`  
+   Display Orientation(this value is passed to [`M5GFX::setRotation()`](https://docs.m5stack.com/ja/arduino/m5gfx/m5gfx_functions#setrotation))
 
+If the configuration file is missing, auto mode is off (`false`), the switch interval is 3 seconds (3000 milliseconds), and random interval switching mode is off (`false`), the display orientation is set to the default orientation of the model.
 
-If the configuration file is missing, auto mode is off (`false`), the switch interval is 3 seconds (3000 milliseconds), and random interval switching mode is off (`false`).
+```json
+{
+  "AutoMode": false,
+  "AutoModeInterval": 3000,
+  "AutoModeRandomized": false,
+  "AutoRotation": false,
+  "Orientation": 1
+}
+```
+
+By setting `AutoRotation` to `false` and specifying the value for `Orientation`, you can fix the display orientation.
 
 ```json
 {
@@ -76,13 +91,14 @@ If an IMU is available on your device, the display orientation automatically cha
 Upon startup, the following is displayed. If there is no configuration file, the `Config:` information will not be shown.
 
 ```text
-Image Viewer v1.0.3
+Image Viewer v1.0.4
 Config:
  /image-viewer.json
  AutoMode: false
  Interval: 3000ms
  Randomized: false
  AutoRotation: true
+ Orientation: CW_0, CW_90, CW_180, CW_270, CCW_0, CCW_90, CCW_180, or CCW_270
 Mode:
  Manual, Auto, or Auto(Forced)
 Rotation:
@@ -97,13 +113,14 @@ Image Files:
 If no image files are found on the file system, the following message is displayed:
 
 ```text
-Image Viewer v1.0.3
+Image Viewer v1.0.4
 Config:
  /image-viewer.json
  AutoMode: false
  Interval: 3000ms
  Randomized: false
  AutoRotation: true
+ Orientation: CW_0, CW_90, CW_180, CW_270, CCW_0, CCW_90, CCW_180, or CCW_270
 Mode:
  Manual, Auto, or Auto(Forced)
 Rotation:

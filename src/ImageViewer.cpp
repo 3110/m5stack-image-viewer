@@ -12,7 +12,7 @@ static M5DialEncoder encoder;
 static int16_t prev_dial_pos = 0;
 
 inline void M5_BEGIN(m5::M5Unified::config_t cfg) {
-    M5.begin();
+    M5.begin(cfg);
     encoder.begin();
 }
 
@@ -57,10 +57,6 @@ inline int32_t getTextAreaHeight(void) {
 #else
 inline void M5_BEGIN(m5::M5Unified::config_t cfg) {
     M5.begin(cfg);
-#if defined(ARDUINO_M5STACK_COREINK) || defined(ARDUINO_M5STACK_PAPER)
-    M5.Lcd.invertDisplay(false);
-    M5.Lcd.setEpdMode(epd_mode_t::epd_quality);
-#endif
 }
 
 inline void M5_BEGIN(void) {
@@ -102,13 +98,14 @@ inline int32_t getTextAreaHeight(void) {
 #include <Arduino_JSON.h>
 #include <string.h>
 
-const char* ImageViewer::VERSION = "v1.0.3";
+const char* ImageViewer::VERSION = "v1.0.4";
 
 const char* ImageViewer::DEFAULT_CONFIG_NAME = "image-viewer.json";
 const char* ImageViewer::KEY_AUTO_MODE = "AutoMode";
 const char* ImageViewer::KEY_AUTO_MODE_INTERVAL = "AutoModeInterval";
 const char* ImageViewer::KEY_AUTO_MODE_RANDOMIZED = "AutoModeRandomized";
 const char* ImageViewer::KEY_AUTO_ROTATION = "AutoRotation";
+const char* ImageViewer::KEY_ORIENTATION = "Orientation";
 
 const float ImageViewer::GRAVITY_THRESHOLD = 0.9F;
 const String ImageViewer::ROOT_DIR("/");
@@ -119,10 +116,9 @@ static const char* EXT_JPEG = ".jpeg";
 static const char* EXT_BMP = ".bmp";
 static const char* EXT_PNG = ".png";
 
-ImageViewer::ImageViewer(Orientation orientation, bool isAutoMode,
-                         uint32_t autoModeInterval, bool isAutoModeRandomized,
-                         bool isAutoRotation)
-    : _orientation(orientation),
+ImageViewer::ImageViewer(bool isAutoMode, uint32_t autoModeInterval,
+                         bool isAutoModeRandomized, bool isAutoRotation)
+    : _orientation(0),
       _isAutoMode(isAutoMode),
       _autoModeInterval(autoModeInterval),
       _isAutoModeRandomized(isAutoModeRandomized),
@@ -141,7 +137,17 @@ ImageViewer::~ImageViewer(void) {
 bool ImageViewer::begin(int bgColor) {
     M5_BEGIN();
 
+    this->_orientation = M5.Lcd.getRotation();
+#if defined(ARDUINO_M5STACK_CARDPUTER)  // TODO: removed when M5GFX v0.1.16 is
+                                        // released
+    this->_orientation = 1;
+#endif
     M5.Lcd.setRotation(this->_orientation);
+
+#if defined(ARDUINO_M5STACK_COREINK) || defined(ARDUINO_M5STACK_PAPER)
+    M5.Lcd.invertDisplay(false);
+    M5.Lcd.setEpdMode(epd_mode_t::epd_quality);
+#endif
 
     M5.Lcd.setTextScroll(true);
     M5.Lcd.setCursor(getTextAreaX(), getTextAreaY());
@@ -171,24 +177,21 @@ bool ImageViewer::begin(int bgColor) {
 
     M5.Lcd.println("Rotation:");
     if (this->_isAutoRotation) {
-        if (!M5.Imu.isEnabled()) {
+        if (M5.Imu.isEnabled()) {
+            M5.Lcd.println(" Auto");
+            if (M5.getBoard() == m5::board_t::board_M5Stack ||
+                M5.getBoard() == m5::board_t::board_M5StackCoreS3 ||
+                M5.getBoard() == m5::board_t::board_M5StackCore2) {
+                M5.Imu.setAxisOrder(m5::IMU_Class::axis_y_pos,
+                                    m5::IMU_Class::axis_x_neg,
+                                    m5::IMU_Class::axis_z_pos);
+            }
+        } else {
             this->_isAutoRotation = false;
             M5.Lcd.println(" No(IMU disabled)");
-        } else {
-            M5.Lcd.println(" Auto");
         }
     } else {
         M5.Lcd.println(" No");
-    }
-    if (this->_isAutoRotation) {
-        if (M5.getBoard() == m5::board_t::board_M5Stack ||
-            M5.getBoard() == m5::board_t::board_M5StackCoreS3 ||
-            M5.getBoard() == m5::board_t::board_M5StackCore2) {
-            M5.Imu.setAxisOrder(m5::IMU_Class::axis_y_pos,
-                                m5::IMU_Class::axis_x_neg,
-                                m5::IMU_Class::axis_z_pos);
-        }
-        updateOrientation();
     }
 
     delay(DEFAULT_START_INTERVAL_MS);
@@ -202,6 +205,11 @@ bool ImageViewer::begin(int bgColor) {
     delay(DEFAULT_START_INTERVAL_MS);
     M5.Lcd.clear();
     M5.Lcd.fillScreen(bgColor);
+    if (this->_isAutoRotation) {
+        updateOrientation();
+    } else {
+        M5.Lcd.setRotation(this->_orientation);
+    }
 
     if (!this->_isAutoMode) {
         showImage(this->_imageFiles, this->_pos);
@@ -269,7 +277,7 @@ bool ImageViewer::setImageFileList(const String& path) {
 }
 
 bool ImageViewer::updateOrientation(float threshold) {
-    const Orientation o = detectOrientation(threshold);
+    const uint8_t o = detectOrientation(threshold);
     if (this->_orientation != o) {
         M5_LOGD("Change Orientation: %d -> %d", this->_orientation, o);
         this->_orientation = o;
@@ -338,22 +346,22 @@ bool ImageViewer::isImageFile(const File& f) const {
     return isJpeg(name) || isPng(name) || isBmp(name);
 }
 
-ImageViewer::Orientation ImageViewer::detectOrientation(float threshold) {
+uint8_t ImageViewer::detectOrientation(float threshold) {
     if (M5.Imu.isEnabled()) {
         float ax, ay, az;
         M5.Imu.getAccel(&ax, &ay, &az);
         M5_LOGV("Accel: ax: %f, ay: %f, az: %f", ax, ay, az);
         if (ay >= threshold) {
-            return OrientationNormal;
+            return 0;
         } else if (ax >= threshold) {
-            return OrientationRight;
+            return 1;
         } else if (ax <= -threshold) {
-            return OrientationLeft;
+            return 3;
         } else if (ay <= -threshold) {
-            return OrientationUpsideDown;
+            return 2;
         }
     }
-    return DEFAULT_ORIENTATION;
+    return 0;
 }
 
 bool ImageViewer::parse(const char* config) {
@@ -404,6 +412,28 @@ bool ImageViewer::parse(const char* config) {
     }
     M5.Lcd.printf(" AutoRotation: %s",
                   this->_isAutoRotation ? "true" : "false");
+    M5.Lcd.println();
+    if (o.hasOwnProperty(KEY_ORIENTATION)) {
+        JSONVar orientationVar = o[KEY_ORIENTATION];
+        if (JSON.typeof(orientationVar) == "number") {
+            int orientationInt = (int)orientationVar;
+            if (0 <= orientationInt && orientationInt <= 7) {
+                this->_orientation = orientationInt;
+            } else {
+                this->_orientation = M5.Lcd.getRotation();
+                M5_LOGE("Invalid Orientation Value: %d", orientationInt);
+            }
+        } else {
+            this->_orientation = M5.Lcd.getRotation();
+            M5_LOGE("Illegal Orientation Type: %s, Value: %s",
+                    JSON.typeof(orientationVar).c_str(),
+                    JSONVar::stringify(orientationVar).c_str());
+        }
+    } else {
+        this->_orientation = M5.Lcd.getRotation();
+        M5_LOGW("Default Orientation is not found");
+    }
+    M5.Lcd.printf(" Orientation: %s", getOrientationString(this->_orientation));
     M5.Lcd.println();
     return true;
 }
