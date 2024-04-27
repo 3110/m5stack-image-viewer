@@ -1,4 +1,4 @@
-#include "M5DialEncoder.hpp"
+#include "M5Encoder.hpp"
 
 #include "driver/gpio.h"
 #include "driver/pcnt.h"
@@ -20,13 +20,13 @@ static pcnt_config_t enc_config = {
     .channel = PCNT_CHANNEL_0,
 };
 
-M5DialEncoder::M5DialEncoder(void) {
+M5Encoder::M5Encoder(void) {
 }
 
-M5DialEncoder::~M5DialEncoder(void) {
+M5Encoder::~M5Encoder(void) {
 }
 
-void M5DialEncoder::begin(void) {
+void M5Encoder::begin(void) {
     pcnt_unit_config(&enc_config);
 
     enc_config.pulse_gpio_num = GPIO_NUM_41;
@@ -48,7 +48,7 @@ void M5DialEncoder::begin(void) {
     pcnt_counter_resume(PCNT_UNIT_0);
 }
 
-int16_t M5DialEncoder::read(void) {
+int16_t M5Encoder::read(void) {
     int16_t count;
     pcnt_get_counter_value(PCNT_UNIT_0, &count);
     return count;

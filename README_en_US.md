@@ -28,6 +28,7 @@ The default display orientation is different for each model.
 | M5ATOM S3        | env:m5stack-atoms3       | 0                   |
 | M5Dial           | env:m5stack-dial         | 0                   |
 | M5Cardputer      | env:m5stack-cardputer    | 1                   |
+| M5DinMeter       | env:m5stack-din-meter    | 0                   |
 | CoreInk          | env:m5stack-coreink      | 0                   |
 | M5Paper          | env:m5stack-paper        | 1                   |
 

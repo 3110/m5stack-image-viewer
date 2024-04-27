@@ -4,10 +4,10 @@
 
 #include <Arduino.h>
 
-class M5DialEncoder {
+class M5Encoder {
 public:
-    M5DialEncoder(void);
-    virtual ~M5DialEncoder(void);
+    M5Encoder(void);
+    virtual ~M5Encoder(void);
 
     virtual void begin(void);
     virtual int16_t read(void);

@@ -1,14 +1,51 @@
 #include "ImageViewer.hpp"
 
+#if defined(ARDUINO_M5STACK_DIAL) || defined(ARDUINO_M5STACK_DIN_METER)
+#include "M5Encoder.hpp"
+
 #if defined(ARDUINO_M5STACK_DIAL)
-#include "M5DialEncoder.hpp"
+inline int16_t getEncoderOffset(void) {
+    return 4;
+}
 
-const int32_t TEXT_AREA_X = 35;
-const int32_t TEXT_AREA_Y = 35;
-const int32_t TEXT_AREA_WIDTH = 170;
-const int32_t TEXT_AREA_HEIGHT = 170;
+inline int32_t getTextAreaX(void) {
+    return 35;
+}
 
-static M5DialEncoder encoder;
+inline int32_t getTextAreaY(void) {
+    return 35;
+}
+
+inline int32_t getTextAreaWidth(void) {
+    return 170;
+}
+
+inline int32_t getTextAreaHeight(void) {
+    return 170;
+}
+#else
+inline int16_t getEncoderOffset(void) {
+    return 2;
+}
+
+inline int32_t getTextAreaX(void) {
+    return 0;
+}
+
+inline int32_t getTextAreaY(void) {
+    return 0;
+}
+
+inline int32_t getTextAreaWidth(void) {
+    return M5.Lcd.width();
+}
+
+inline int32_t getTextAreaHeight(void) {
+    return M5.Lcd.height();
+}
+#endif
+
+static M5Encoder encoder;
 static int16_t prev_dial_pos = 0;
 
 inline void M5_BEGIN(m5::M5Unified::config_t cfg) {
@@ -29,7 +66,7 @@ inline int16_t getDirection(void) {
     // const long pos = M5Dial.Encoder.read();
     const int16_t pos = encoder.read();
     M5_LOGV("Dial: %d -> %d", prev_dial_pos, pos);
-    if (abs(prev_dial_pos - pos) >= 4) {
+    if (abs(prev_dial_pos - pos) >= getEncoderOffset()) {
         const int16_t direction = pos - prev_dial_pos > 0 ? 1 : -1;
         prev_dial_pos = pos;
         return direction;
@@ -37,23 +74,6 @@ inline int16_t getDirection(void) {
         return 0;
     }
 }
-
-inline int32_t getTextAreaX(void) {
-    return TEXT_AREA_X;
-}
-
-inline int32_t getTextAreaY(void) {
-    return TEXT_AREA_Y;
-}
-
-inline int32_t getTextAreaWidth(void) {
-    return TEXT_AREA_WIDTH;
-}
-
-inline int32_t getTextAreaHeight(void) {
-    return TEXT_AREA_HEIGHT;
-}
-
 #else
 inline void M5_BEGIN(m5::M5Unified::config_t cfg) {
     M5.begin(cfg);
