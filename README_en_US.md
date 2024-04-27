@@ -13,7 +13,7 @@ There are two display modes available:
 
 Compile in the [PlatformIO IDE](https://platformio.org/platformio-ide) environment. Please select the environment appropriate for your model.
 
-The default display orientation is different for each model. M5Dial is originally set to 0, but this program sets the orientation to 1 for this model.
+The default display orientation is different for each model.
 
 | Model            | Environment              | Default Orientation |
 | :--------------- | :------------------------| :------------------ |
@@ -26,8 +26,9 @@ The default display orientation is different for each model. M5Dial is originall
 | M5Stick C Plus   | env:m5stick-c-plus       | 0                   |
 | M5Stick C Plus2  | env:m5stick-c-plus2      | 0                   |
 | M5ATOM S3        | env:m5stack-atoms3       | 0                   |
-| M5Dial           | env:m5stack-dial         | 1                   |
+| M5Dial           | env:m5stack-dial         | 0                   |
 | M5Cardputer      | env:m5stack-cardputer    | 1                   |
+| M5DinMeter       | env:m5stack-din-meter    | 0                   |
 | CoreInk          | env:m5stack-coreink      | 0                   |
 | M5Paper          | env:m5stack-paper        | 1                   |
 
@@ -91,7 +92,7 @@ If an IMU is available on your device, the display orientation automatically cha
 Upon startup, the following is displayed. If there is no configuration file, the `Config:` information will not be shown.
 
 ```text
-Image Viewer v1.0.4
+Image Viewer v1.0.5
 Config:
  /image-viewer.json
  AutoMode: false
@@ -113,7 +114,7 @@ Image Files:
 If no image files are found on the file system, the following message is displayed:
 
 ```text
-Image Viewer v1.0.4
+Image Viewer v1.0.5
 Config:
  /image-viewer.json
  AutoMode: false

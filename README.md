@@ -15,7 +15,7 @@ M5Stackシリーズでファイルシステム（LittleFS）上にある画像�
 
 [PlatformIO IDE](https://platformio.org/platformio-ide)環境でコンパイルします。機種に合わせて環境を選択してください。
 
-デフォルトの表示の向きは機種ごとに違います。M5Dialは本来の向きは0ですが，このプログラムでは1に変更しています。
+デフォルトの表示の向きは機種ごとに違います。
 
 | 機種            | 環境                  | デフォルトの表示の向き |
 | :-------------- | :---------------------| :--------------------- |
@@ -28,8 +28,9 @@ M5Stackシリーズでファイルシステム（LittleFS）上にある画像�
 | M5Stick C Plus  | env:m5stick-c-plus    | 0                      |
 | M5Stick C Plus2 | env:m5stick-c-plus2   | 0                      |
 | M5ATOM S3       | env:m5stack-atoms3    | 0                      |
-| M5Dial          | env:m5stack-dial      | 1                      |
+| M5Dial          | env:m5stack-dial      | 0                      |
 | M5Cardputer     | env:m5stack-cardputer | 1                      |
+| M5DinMeter      | env:m5stack-din-meter | 0                      |
 | CoreInk         | env:m5stack-coreink   | 0                      |
 | M5Paper         | env:m5stack-paper     | 1                      |
 
@@ -93,7 +94,7 @@ IMUが使える場合は，画面の向きに合わせて表示が自動的に�
 起動すると以下の画面が表示されます。設定ファイルがない場合`Config:`の情報は表示されません。
 
 ```text
-Image Viewer v1.0.4
+Image Viewer v1.0.5
 Config:
  /image-viewer.json
  AutoMode: false
@@ -115,7 +116,7 @@ Image Files:
 ファイルシステム上に画像ファイルがない場合は，以下のように表示されます。
 
 ```text
-Image Viewer v1.0.4
+Image Viewer v1.0.5
 Config:
  /image-viewer.json
  AutoMode: false

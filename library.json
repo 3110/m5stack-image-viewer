@@ -1,0 +1,25 @@
+{
+    "name": "ImageViewer",
+    "version": "1.0.5",
+    "description": "Image Viewer for M5Stack Series",
+    "keywords": [
+        "M5Stack",
+        "Image Viewer",
+        "M5Unified"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/3110/m5stack-image-viewer.git"
+    },
+    "authors": {
+        "name": "SAITO, Tetsuya",
+        "email": "tetsuya.saito@gmail.com",
+        "url": "https://scrapbox.io/saitotetsuya"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "Arduino_JSON": "0.2.0",
+        "M5Unified": "0.1.14",
+        "M5GFX": "0.1.15"
+    }
+}
