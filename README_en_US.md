@@ -13,7 +13,7 @@ There are two display modes available:
 
 Compile in the [PlatformIO IDE](https://platformio.org/platformio-ide) environment. Please select the environment appropriate for your model.
 
-The default display orientation is different for each model. M5Dial is originally set to 0, but this program sets the orientation to 1 for this model.
+The default display orientation is different for each model.
 
 | Model            | Environment              | Default Orientation |
 | :--------------- | :------------------------| :------------------ |
@@ -26,7 +26,7 @@ The default display orientation is different for each model. M5Dial is originall
 | M5Stick C Plus   | env:m5stick-c-plus       | 0                   |
 | M5Stick C Plus2  | env:m5stick-c-plus2      | 0                   |
 | M5ATOM S3        | env:m5stack-atoms3       | 0                   |
-| M5Dial           | env:m5stack-dial         | 1                   |
+| M5Dial           | env:m5stack-dial         | 0                   |
 | M5Cardputer      | env:m5stack-cardputer    | 1                   |
 | CoreInk          | env:m5stack-coreink      | 0                   |
 | M5Paper          | env:m5stack-paper        | 1                   |
