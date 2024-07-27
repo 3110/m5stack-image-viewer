@@ -76,9 +76,6 @@ inline int16_t getDirection(void) {
 }
 #else
 inline void M5_BEGIN(m5::M5Unified::config_t cfg) {
-#if defined(ARDUINO_M5STACK_PAPER) || defined(ARDUINO_M5STACK_COREINK)
-    M5.Display.setEpdMode(epd_mode_t::epd_quality);
-#endif
     M5.begin(cfg);
 }
 
