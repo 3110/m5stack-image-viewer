@@ -271,14 +271,14 @@ bool ImageViewer::update(void) {
 bool ImageViewer::setImageFileList(const String& path) {
     File root = IV_FS.open(path.c_str(), "r");
     if (!root and !root.isDirectory()) {
-        M5.Lcd.printf("Failed to open \"%s\"", ROOT_DIR);
+        M5.Lcd.printf("Failed to open \"%s\"", path.c_str());
         M5.Lcd.println();
         return false;
     }
     File f = root.openNextFile();
     while (f && this->_nImageFiles < MAX_IMAGE_FILES) {
         if (!f.isDirectory() && isImageFile(f)) {
-            this->_imageFiles[this->_nImageFiles] = ROOT_DIR + f.name();
+            this->_imageFiles[this->_nImageFiles] = path + f.name();
             ++this->_nImageFiles;
         }
         f = root.openNextFile();
