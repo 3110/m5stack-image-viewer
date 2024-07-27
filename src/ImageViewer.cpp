@@ -235,7 +235,7 @@ bool ImageViewer::begin(int bgColor) {
     }
 
     if (!this->_isAutoMode) {
-        showImage(this->_imageFiles, this->_pos);
+        showImage();
     }
 
     return true;
@@ -245,7 +245,7 @@ bool ImageViewer::update(void) {
     M5_UPDATE();
 
     if (this->_isAutoRotation && updateOrientation(GRAVITY_THRESHOLD)) {
-        showImage(this->_imageFiles, this->_pos);
+        showImage();
     }
 
     const uint32_t t = millis();
@@ -263,7 +263,7 @@ bool ImageViewer::update(void) {
         } else {
             this->_pos += direction;
         }
-        showImage(this->_imageFiles, this->_pos);
+        showImage();
         if (this->_isAutoMode && this->_isAutoModeRandomized) {
             this->_interval = random(this->_autoModeInterval);
         }
@@ -310,8 +310,8 @@ bool ImageViewer::updateOrientation(float threshold) {
     return false;
 }
 
-void ImageViewer::showImage(const String images[], size_t p) {
-    const char* filename = images[p].c_str();
+void ImageViewer::showImage(void) {
+    const char* filename = this->_imageFiles[this->_pos].c_str();
     M5.Lcd.startWrite();
     if (isJpeg(filename)) {
         M5.Lcd.drawJpgFile(filename, 0, 0, M5.Display.width(),

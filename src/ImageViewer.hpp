@@ -64,7 +64,7 @@ public:
 
 protected:
     virtual bool setImageFileList(const String& path = ROOT_DIR);
-    virtual void showImage(const String images[], size_t p);
+    virtual void showImage(void);
     virtual bool hasExt(const char* filename, const char* ext) const;
     virtual bool isJpeg(const char* filename) const;
     virtual bool isPng(const char* filename) const;
