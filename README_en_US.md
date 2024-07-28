@@ -11,7 +11,7 @@ There are two display modes available:
 
 ## How to Compile
 
-Compile in the [PlatformIO IDE](https://platformio.org/platformio-ide) environment. Please select the environment appropriate for your model. Environments with '-sd' prefix are for devices with an SD card slot.
+Compile in the [PlatformIO IDE](https://platformio.org/platformio-ide) environment. Please select the environment appropriate for your model. Environments with '-sd' prefix are for devices with an microSD card slot.
 
 | Model            | Environment                 |
 | :--------------- | :-------------------------- |
@@ -92,6 +92,12 @@ Turning on the random interval switching mode will switch images at random inter
 This configuration file will be uploaded to the device's file system along with the images during the "Uploading Images to Display" process in the next step.
 
 ## Uploading Images to Display
+
+### For microSD Card
+
+Place the configuration file (`image-viewer.json`) and the image files you want to display (PNG, JPEG, BMP) in the root directory of the microSD card. Prepare a microSD card with a maximum capacity of 16GB and format it as FAT32.
+
+### For LittleFS
 
 Place image files (PNG, JPEG, BMP) in the `data` directory and upload them to the device using one of the following methods:
 
