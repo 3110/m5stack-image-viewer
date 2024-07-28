@@ -158,10 +158,6 @@ bool ImageViewer::begin(int bgColor) {
     M5_BEGIN();
 
     this->_orientation = M5.Lcd.getRotation();
-#if defined(ARDUINO_M5STACK_CARDPUTER)  // TODO: removed when M5GFX v0.1.16 is
-                                        // released
-    this->_orientation = 1;
-#endif
     M5.Lcd.setRotation(this->_orientation);
 
 #if defined(ARDUINO_M5STACK_COREINK) || defined(ARDUINO_M5STACK_PAPER)
