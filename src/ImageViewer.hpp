@@ -15,29 +15,29 @@
 #if defined(IV_FS_SD)
 #define IV_FS             SD
 #define SD_FREQUENCY      15000000
-#define SD_MOUNT_RETRY    10
+#define SD_MOUNT_RETRY    5
 #define SD_MOUNT_DELAY_MS 500
-#if defined(ARDUINO_M5STACK_CARDPUTER)
-#define TARGET_SPI SPI2
-extern SPIClass SPI2;
-#else
-#define TARGET_SPI SPI
-#endif
+#define TARGET_SPI        SPI
 inline bool IVS_FS_BEGIN() {
-#if defined(ARDUINO_M5STACK_CARDPUTER)
+    M5.Lcd.print("Mounting SD Card ...");
     TARGET_SPI.begin(M5.getPin(m5::pin_name_t::sd_spi_sclk),
                      M5.getPin(m5::pin_name_t::sd_spi_miso),
                      M5.getPin(m5::pin_name_t::sd_spi_mosi),
                      M5.getPin(m5::pin_name_t::sd_spi_ss));
-#endif
-    for (int i = 0; i = SD_MOUNT_RETRY; ++i) {
+    uint8_t retry = 0;
+    for (retry = 0; retry < SD_MOUNT_RETRY; ++retry) {
         if (IV_FS.begin(M5.getPin(m5::pin_name_t::sd_spi_ss), TARGET_SPI,
                         SD_FREQUENCY)) {
-            return true;
+            break;
         }
         delay(SD_MOUNT_DELAY_MS);
+        M5.Lcd.print(".");
     }
-    return false;
+    const bool succeeded = (retry < SD_MOUNT_RETRY);
+    M5.Lcd.println(succeeded ? " Done." : " Failed.");
+    delay(500);
+    M5.Lcd.clear();
+    return succeeded;
 }
 #else
 #define IV_FS               LittleFS

@@ -118,10 +118,6 @@ inline int32_t getTextAreaHeight(void) {
 #include <Arduino_JSON.h>
 #include <string.h>
 
-#if defined(IV_FS_SD) && defined(ARDUINO_M5STACK_CARDPUTER)
-SPIClass SPI2;
-#endif
-
 const char* ImageViewer::VERSION = "v1.0.6";
 
 const char* ImageViewer::PATH_SEP = "/";
