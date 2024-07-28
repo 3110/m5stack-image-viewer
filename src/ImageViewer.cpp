@@ -118,7 +118,9 @@ inline int32_t getTextAreaHeight(void) {
 #include <Arduino_JSON.h>
 #include <string.h>
 
-const char* ImageViewer::VERSION = "v1.0.5";
+const char* ImageViewer::VERSION = "v1.0.6";
+
+const char* ImageViewer::PATH_SEP = "/";
 
 const char* ImageViewer::DEFAULT_CONFIG_NAME = "image-viewer.json";
 const char* ImageViewer::KEY_AUTO_MODE = "AutoMode";
@@ -128,17 +130,18 @@ const char* ImageViewer::KEY_AUTO_ROTATION = "AutoRotation";
 const char* ImageViewer::KEY_ORIENTATION = "Orientation";
 
 const float ImageViewer::GRAVITY_THRESHOLD = 0.9F;
-const String ImageViewer::ROOT_DIR("/");
+const String ImageViewer::ROOT_DIR(ImageViewer::PATH_SEP);
 
-static const bool FORMAT_FS_IF_FAILED = true;
 static const char* EXT_JPG = ".jpg";
 static const char* EXT_JPEG = ".jpeg";
 static const char* EXT_BMP = ".bmp";
 static const char* EXT_PNG = ".png";
 
-ImageViewer::ImageViewer(bool isAutoMode, uint32_t autoModeInterval,
-                         bool isAutoModeRandomized, bool isAutoRotation)
-    : _orientation(0),
+ImageViewer::ImageViewer(const String& rootDir, bool isAutoMode,
+                         uint32_t autoModeInterval, bool isAutoModeRandomized,
+                         bool isAutoRotation)
+    : _rootDir(rootDir.endsWith(PATH_SEP) ? rootDir : rootDir + PATH_SEP),
+      _orientation(0),
       _isAutoMode(isAutoMode),
       _autoModeInterval(autoModeInterval),
       _isAutoModeRandomized(isAutoModeRandomized),
@@ -158,10 +161,6 @@ bool ImageViewer::begin(int bgColor) {
     M5_BEGIN();
 
     this->_orientation = M5.Lcd.getRotation();
-#if defined(ARDUINO_M5STACK_CARDPUTER)  // TODO: removed when M5GFX v0.1.16 is
-                                        // released
-    this->_orientation = 1;
-#endif
     M5.Lcd.setRotation(this->_orientation);
 
 #if defined(ARDUINO_M5STACK_COREINK) || defined(ARDUINO_M5STACK_PAPER)
@@ -174,8 +173,9 @@ bool ImageViewer::begin(int bgColor) {
     M5.Lcd.setScrollRect(getTextAreaX(), getTextAreaY(), getTextAreaWidth(),
                          getTextAreaHeight());
 
-    if (!IV_FS.begin(FORMAT_FS_IF_FAILED)) {
-        M5.Lcd.println("Failed to mount File System");
+    if (!IVS_FS_BEGIN()) {
+        M5.Lcd.printf("Failed to mount %s", TOSTRING(IV_FS));
+        M5.Lcd.println();
         return false;
     }
     M5.Lcd.setFileStorage(IV_FS);
@@ -232,7 +232,7 @@ bool ImageViewer::begin(int bgColor) {
     }
 
     if (!this->_isAutoMode) {
-        showImage(this->_imageFiles, this->_pos);
+        showImage();
     }
 
     return true;
@@ -242,7 +242,7 @@ bool ImageViewer::update(void) {
     M5_UPDATE();
 
     if (this->_isAutoRotation && updateOrientation(GRAVITY_THRESHOLD)) {
-        showImage(this->_imageFiles, this->_pos);
+        showImage();
     }
 
     const uint32_t t = millis();
@@ -260,7 +260,7 @@ bool ImageViewer::update(void) {
         } else {
             this->_pos += direction;
         }
-        showImage(this->_imageFiles, this->_pos);
+        showImage();
         if (this->_isAutoMode && this->_isAutoModeRandomized) {
             this->_interval = random(this->_autoModeInterval);
         }
@@ -268,17 +268,17 @@ bool ImageViewer::update(void) {
     return direction != 0;
 }
 
-bool ImageViewer::setImageFileList(const String& path) {
-    File root = IV_FS.open(path.c_str(), "r");
+bool ImageViewer::setImageFileList(void) {
+    File root = IV_FS.open(this->_rootDir, "r");
     if (!root and !root.isDirectory()) {
-        M5.Lcd.printf("Failed to open \"%s\"", ROOT_DIR);
+        M5.Lcd.printf("Failed to open \"%s\"", this->_rootDir.c_str());
         M5.Lcd.println();
         return false;
     }
     File f = root.openNextFile();
     while (f && this->_nImageFiles < MAX_IMAGE_FILES) {
         if (!f.isDirectory() && isImageFile(f)) {
-            this->_imageFiles[this->_nImageFiles] = ROOT_DIR + f.name();
+            this->_imageFiles[this->_nImageFiles] = this->_rootDir + f.name();
             ++this->_nImageFiles;
         }
         f = root.openNextFile();
@@ -287,6 +287,7 @@ bool ImageViewer::setImageFileList(const String& path) {
         M5.Lcd.println("No image files found");
         return false;
     }
+    std::sort(this->_imageFiles, this->_imageFiles + this->_nImageFiles);
     M5.Lcd.println("Image Files:");
     for (size_t c = 0; c < this->_nImageFiles; ++c) {
         M5.Lcd.print(" ");
@@ -307,8 +308,8 @@ bool ImageViewer::updateOrientation(float threshold) {
     return false;
 }
 
-void ImageViewer::showImage(const String images[], size_t p) {
-    const char* filename = images[p].c_str();
+void ImageViewer::showImage(void) {
+    const char* filename = this->_imageFiles[this->_pos].c_str();
     M5.Lcd.startWrite();
     if (isJpeg(filename)) {
         M5.Lcd.drawJpgFile(filename, 0, 0, M5.Display.width(),
@@ -389,7 +390,7 @@ bool ImageViewer::parse(const char* config) {
         M5_LOGE("config is null");
         return false;
     }
-    const String filename = ROOT_DIR + config;
+    const String filename = this->_rootDir + config;
     if (!IV_FS.exists(filename)) {
         M5_LOGW("%s is not found", filename.c_str());
         return true;  // use default
