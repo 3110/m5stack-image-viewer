@@ -122,7 +122,7 @@ inline int32_t getTextAreaHeight(void) {
 SPIClass SPI2;
 #endif
 
-const char* ImageViewer::VERSION = "v1.0.5";
+const char* ImageViewer::VERSION = "v1.0.6";
 
 const char* ImageViewer::PATH_SEP = "/";
 
