@@ -1,6 +1,6 @@
 # Image Viewer for M5Stack Series
 
-This program displays images stored on the LittleFS file system of the M5Stack series devices one after another.
+This program displays images stored on the LittleFS file system or SD card of the M5Stack series devices one after another.
 
 There are two display modes available:
 
@@ -11,26 +11,43 @@ There are two display modes available:
 
 ## How to Compile
 
-Compile in the [PlatformIO IDE](https://platformio.org/platformio-ide) environment. Please select the environment appropriate for your model.
+Compile in the [PlatformIO IDE](https://platformio.org/platformio-ide) environment. Please select the environment appropriate for your model. Environments with '-sd' prefix are for devices with an SD card slot.
+
+| Model            | Environment                 |
+| :--------------- | :-------------------------- |
+| M5Stack BASIC    | env:m5stack-basic(-sd)      |
+| M5Stack Fire     | env:m5stack-fire(-sd)       |
+| M5Go             | env:m5stack-m5go(-sd)       |
+| M5Stack Core2    | env:m5stack-core2(-sd)      |
+| M5Stack Core3    | env:m5stack-core3(-sd)      |
+| M5Stick C Plus   | env:m5stick-c-plus          |
+| M5Stick C Plus2  | env:m5stick-c-plus2         |
+| M5ATOM S3        | env:m5stack-atoms3          |
+| M5Dial           | env:m5stack-dial            |
+| M5Cardputer      | env:m5stack-cardputer(-sd)  |
+| M5DinMeter       | env:m5stack-din-meter       |
+| CoreInk          | env:m5stack-coreink         |
+| M5Paper          | env:m5stack-paper(-sd)      |
+
 
 The default display orientation is different for each model.
 
-| Model            | Environment              | Default Orientation |
-| :--------------- | :------------------------| :------------------ |
-| M5Stack BASIC    | env:m5stack-basic        | 1                   |
-| M5Stack Fire     | env:m5stack-fire         | 1                   |
-| M5Go             | env:m5stack-m5go         | 1                   |
-| M5Stack Core2    | env:m5stack-core2        | 1                   |
-| M5Stack Core3    | env:m5stack-core3        | 1                   |
-| M5Stick C        | env:m5stick-c            | 0                   |
-| M5Stick C Plus   | env:m5stick-c-plus       | 0                   |
-| M5Stick C Plus2  | env:m5stick-c-plus2      | 0                   |
-| M5ATOM S3        | env:m5stack-atoms3       | 0                   |
-| M5Dial           | env:m5stack-dial         | 0                   |
-| M5Cardputer      | env:m5stack-cardputer    | 1                   |
-| M5DinMeter       | env:m5stack-din-meter    | 0                   |
-| CoreInk          | env:m5stack-coreink      | 0                   |
-| M5Paper          | env:m5stack-paper        | 1                   |
+| Model            | Environment                | Default Orientation |
+| :--------------- | :------------------------- | :------------------ |
+| M5Stack BASIC    | env:m5stack-basic(-sd)     | 1                   |
+| M5Stack Fire     | env:m5stack-fire(-sd)      | 1                   |
+| M5Go             | env:m5stack-m5go(-sd)      | 1                   |
+| M5Stack Core2    | env:m5stack-core2(-sd)     | 1                   |
+| M5Stack Core3    | env:m5stack-core3(-sd)     | 1                   |
+| M5Stick C        | env:m5stick-c              | 0                   |
+| M5Stick C Plus   | env:m5stick-c-plus         | 0                   |
+| M5Stick C Plus2  | env:m5stick-c-plus2        | 0                   |
+| M5ATOM S3        | env:m5stack-atoms3         | 0                   |
+| M5Dial           | env:m5stack-dial           | 0                   |
+| M5Cardputer      | env:m5stack-cardputer(-sd) | 1                   |
+| M5DinMeter       | env:m5stack-din-meter      | 0                   |
+| CoreInk          | env:m5stack-coreink        | 0                   |
+| M5Paper          | env:m5stack-paper(-sd)     | 1                   |
 
 ## Configuration File
 
