@@ -98,7 +98,7 @@ M5Stackシリーズでファイルシステム（LittleFS，microSD）上にあ�
 
 ### microSDカードの場合
 
-設定ファイル（`image-viewer.json`）と表示する画像ファイル（PNG，JPEG，BMP）をmicroSDカードのルートディレクトリに置きます。使用するmicroSDカードは最大容量は16GBのものを用意し，FAT32でフォーマットしてください。
+設定ファイル（`image-viewer.json`）と表示する画像ファイル（PNG，JPEG，BMP）をmicroSDカードのルートディレクトリに置きます。使用するmicroSDカードの最大容量は16GBのものを用意し，FAT32でフォーマットしてください。
 
 ### LittleFSの場合
 
