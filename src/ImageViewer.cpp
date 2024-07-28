@@ -287,6 +287,7 @@ bool ImageViewer::setImageFileList(const String& path) {
         M5.Lcd.println("No image files found");
         return false;
     }
+    std::sort(this->_imageFiles, this->_imageFiles + this->_nImageFiles);
     M5.Lcd.println("Image Files:");
     for (size_t c = 0; c < this->_nImageFiles; ++c) {
         M5.Lcd.print(" ");
