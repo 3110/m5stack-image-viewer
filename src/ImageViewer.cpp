@@ -89,7 +89,8 @@ inline void M5_UPDATE(void) {
 }
 
 inline int32_t getDirection(void) {
-#if defined(ARDUINO_M5STACK_COREINK) || defined(ARDUINO_M5STACK_PAPER)
+#if defined(ARDUINO_M5STACK_COREINK) || defined(ARDUINO_M5STACK_PAPER) || \
+    defined(ARDUINO_M5STACK_PAPERS3)
     if (M5.Touch.getDetail().wasFlicked()) {
         return M5.Touch.getDetail().distanceX() > 0 ? 1 : -1;
     } else {
@@ -103,6 +104,7 @@ inline int32_t getDirection(void) {
     } else {
         return 0;
     }
+#endif
 }
 
 inline int32_t getTextAreaX(void) {
@@ -170,10 +172,17 @@ bool ImageViewer::begin(int bgColor) {
     this->_orientation = M5.Lcd.getRotation();
     M5.Lcd.setRotation(this->_orientation);
 
-#if defined(ARDUINO_M5STACK_COREINK) || defined(ARDUINO_M5STACK_PAPER)
-    M5.Lcd.invertDisplay(false);
-    M5.Lcd.setEpdMode(epd_mode_t::epd_quality);
-#endif
+    if (M5.getBoard() == m5::board_t::board_M5StackCoreInk ||
+        M5.getBoard() == m5::board_t::board_M5Paper ||
+        M5.getBoard() == m5::board_t::board_M5PaperS3) {
+        M5.Lcd.invertDisplay(false);
+        M5.Lcd.setEpdMode(epd_mode_t::epd_quality);
+    }
+
+    if (M5.getBoard() == m5::board_t::board_M5Paper ||
+        M5.getBoard() == m5::board_t::board_M5PaperS3) {
+        M5.Lcd.setTextSize(2);
+    }
 
     M5.Lcd.setTextScroll(true);
     M5.Lcd.setCursor(getTextAreaX(), getTextAreaY());
@@ -207,10 +216,14 @@ bool ImageViewer::begin(int bgColor) {
         if (M5.Imu.isEnabled()) {
             M5.Lcd.println(" Auto");
             if (M5.getBoard() == m5::board_t::board_M5Stack ||
-                M5.getBoard() == m5::board_t::board_M5StackCoreS3 ||
-                M5.getBoard() == m5::board_t::board_M5StackCore2) {
+                M5.getBoard() == m5::board_t::board_M5StackCore2 ||
+                M5.getBoard() == m5::board_t::board_M5StackCoreS3) {
                 M5.Imu.setAxisOrder(m5::IMU_Class::axis_y_pos,
                                     m5::IMU_Class::axis_x_neg,
+                                    m5::IMU_Class::axis_z_pos);
+            } else if (M5.getBoard() == m5::board_t::board_M5PaperS3) {
+                M5.Imu.setAxisOrder(m5::IMU_Class::axis_y_pos,
+                                    m5::IMU_Class::axis_x_pos,
                                     m5::IMU_Class::axis_z_pos);
             }
         } else {
