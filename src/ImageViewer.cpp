@@ -89,6 +89,13 @@ inline void M5_UPDATE(void) {
 }
 
 inline int32_t getDirection(void) {
+#if defined(ARDUINO_M5STACK_COREINK) || defined(ARDUINO_M5STACK_PAPER)
+    if (M5.Touch.getDetail().wasFlicked()) {
+        return M5.Touch.getDetail().distanceX() > 0 ? 1 : -1;
+    } else {
+        return 0;
+    }
+#else
     if (M5.BtnA.wasClicked()) {
         return 1;
     } else if (M5.BtnC.wasClicked()) {

@@ -6,6 +6,8 @@ There are two display modes available:
 
 * Manual Mode  
   Press the A button to switch and display images one by one.
+  For M5Dial, turn the dial left or right to switch images in reverse or forward order.
+  For CoreInk and M5Paper, swipe the screen left or right to switch images in reverse or forward order.
 * Auto Mode  
   Displays images at intervals (in milliseconds) specified in the configuration file. It can also display images at random intervals up to the specified display interval.
 
