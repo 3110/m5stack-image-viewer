@@ -6,6 +6,8 @@ There are two display modes available:
 
 * Manual Mode  
   Press the A button to switch and display images one by one.
+  For M5Dial, turn the dial left or right to switch images in reverse or forward order.
+  For CoreInk, M5Paper, and M5PaperS3, swipe the screen left or right to switch images in reverse or forward order.
 * Auto Mode  
   Displays images at intervals (in milliseconds) specified in the configuration file. It can also display images at random intervals up to the specified display interval.
 
@@ -28,6 +30,7 @@ Compile in the [PlatformIO IDE](https://platformio.org/platformio-ide) environme
 | M5DinMeter       | env:m5stack-din-meter       |
 | CoreInk          | env:m5stack-coreink         |
 | M5Paper          | env:m5stack-paper(-sd)      |
+| M5PaperS3        | env:m5stack-papers3(-sd)      |
 
 
 The default display orientation is different for each model.
@@ -48,6 +51,7 @@ The default display orientation is different for each model.
 | M5DinMeter       | env:m5stack-din-meter      | 0                   |
 | CoreInk          | env:m5stack-coreink        | 0                   |
 | M5Paper          | env:m5stack-paper(-sd)     | 1                   |
+| M5PaperS3        | env:m5stack-paper(-sd)     | 1                   |
 
 ## Configuration File
 
