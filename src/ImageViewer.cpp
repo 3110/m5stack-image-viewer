@@ -439,6 +439,7 @@ bool ImageViewer::parse(const char* config) {
     M5.Lcd.println();
     if (o.hasOwnProperty(KEY_AUTO_MODE_INTERVAL)) {
         this->_autoModeInterval = (uint32_t)o[KEY_AUTO_MODE_INTERVAL];
+        this->_interval = this->_autoModeInterval;
     }
     M5.Lcd.printf(" Interval: %dms", this->_autoModeInterval);
     M5.Lcd.println();
