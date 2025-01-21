@@ -63,12 +63,14 @@ The following settings can be configured in the `data/image-viewer.json` configu
   Interval for switching images in auto display mode (milliseconds).
 * `AutoModeRandomized`  
   Turn random interval switching mode on (`true`) or off (`false`).
-* `AutoRotation`
+* `AutoRotation`  
   Turn automatically adjusting the display orientation on (`true`) or off (`false`) for IMU included devices.
 * `Orientation`  
    Display Orientation(this value is passed to [`M5GFX::setRotation()`](https://docs.m5stack.com/ja/arduino/m5gfx/m5gfx_functions#setrotation))
+* `ClearBeforeDisplay`  
+  Whether to clear the screen before displaying an image (`true`) or not (`false`).
 
-If the configuration file is missing, auto mode is off (`false`), the switch interval is 3 seconds (3000 milliseconds), and random interval switching mode is off (`false`), the display orientation is set to the default orientation of the model.
+If there is no configuration file, the default settings are: auto mode is off (`false`), the switching interval is 3 seconds (3000 milliseconds), random switching interval mode is off (`false`), follow the screen orientation (`true`), the display orientation is the default display orientation of the model, and do not clear the screen before displaying an image (`false`).
 
 ```json
 {
@@ -76,7 +78,8 @@ If the configuration file is missing, auto mode is off (`false`), the switch int
   "AutoModeInterval": 3000,
   "AutoModeRandomized": false,
   "AutoRotation": false,
-  "Orientation": 1
+  "Orientation": 1,
+  "ClearBeforeDisplay": false
 }
 ```
 
@@ -119,7 +122,7 @@ If an IMU is available on your device, the display orientation automatically cha
 Upon startup, the following is displayed. If there is no configuration file, the `Config:` information will not be shown.
 
 ```text
-Image Viewer v1.0.6
+Image Viewer v1.0.8
 Config:
  /image-viewer.json
  AutoMode: false
@@ -127,6 +130,7 @@ Config:
  Randomized: false
  AutoRotation: true
  Orientation: CW_0, CW_90, CW_180, CW_270, CCW_0, CCW_90, CCW_180, or CCW_270
+ ClearBeforeDisplay: false
 Mode:
  Manual, Auto, or Auto(Forced)
 Rotation:
@@ -141,7 +145,7 @@ Image Files:
 If no image files are found on the file system, the following message is displayed:
 
 ```text
-Image Viewer v1.0.6
+Image Viewer v1.0.8
 Config:
  /image-viewer.json
  AutoMode: false
@@ -149,6 +153,7 @@ Config:
  Randomized: false
  AutoRotation: true
  Orientation: CW_0, CW_90, CW_180, CW_270, CCW_0, CCW_90, CCW_180, or CCW_270
+ ClearBeforeDisplay: false
 Mode:
  Manual, Auto, or Auto(Forced)
 Rotation:

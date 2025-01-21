@@ -82,6 +82,7 @@ public:
     static const char* KEY_AUTO_MODE_RANDOMIZED;
     static const char* KEY_AUTO_ROTATION;
     static const char* KEY_ORIENTATION;
+    static const char* KEY_CLEAR_BEFORE_DISPLAY;
 
     static const size_t MAX_IMAGE_FILES = 50;
     static const bool DEFAULT_AUTO_MODE = false;
@@ -89,7 +90,9 @@ public:
     static const uint32_t DEFAULT_AUTO_MODE_INTERVAL_MS = 3000;
     static const bool DEFAULT_AUTO_MODE_RANDOMIZED = false;
     static const bool DEFAULT_AUTO_ROTATION = true;
+    static const bool DEFAULT_CLEAR_BEFORE_DISPLAY = false;
     static const uint32_t FILE_LIST_DISPLAY_INTERVAL_MS = 100;
+    static const int DEFAULT_BG_COLOR = TFT_WHITE;
 
     static const float GRAVITY_THRESHOLD;
     static const String ROOT_DIR;
@@ -98,10 +101,11 @@ public:
                 bool isAutoMode = DEFAULT_AUTO_MODE,
                 uint32_t autoModeInterval = DEFAULT_AUTO_MODE_INTERVAL_MS,
                 bool isAutoModeRandomize = DEFAULT_AUTO_MODE_RANDOMIZED,
-                bool isAutoRotation = DEFAULT_AUTO_ROTATION);
+                bool isAutoRotation = DEFAULT_AUTO_ROTATION,
+                bool isClearBeforeDisplay = DEFAULT_CLEAR_BEFORE_DISPLAY);
     virtual ~ImageViewer(void);
 
-    virtual bool begin(const int bgColor = TFT_WHITE);
+    virtual bool begin(const int bgColor = DEFAULT_BG_COLOR);
     virtual bool update(void);
 
     virtual bool updateOrientation(float threshold = GRAVITY_THRESHOLD);
@@ -109,6 +113,7 @@ public:
 protected:
     virtual bool setImageFileList(void);
     virtual void showImage(void);
+    virtual void clear(void);
     virtual bool hasExt(const char* filename, const char* ext) const;
     virtual bool isJpeg(const char* filename) const;
     virtual bool isPng(const char* filename) const;
@@ -123,6 +128,7 @@ private:
     uint32_t _autoModeInterval;
     bool _isAutoModeRandomized;
     bool _isAutoRotation;
+    bool _isClearBeforeDisplay;
 
     String _rootDir;
     String _imageFiles[MAX_IMAGE_FILES];
@@ -130,4 +136,5 @@ private:
     size_t _pos;
     uint32_t _prevUpdate;
     uint32_t _interval;
+    int _bgColor;
 };

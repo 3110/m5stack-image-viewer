@@ -66,12 +66,14 @@ M5Stackシリーズでファイルシステム（LittleFS，microSD）上にあ�
   自動表示モードのときの画像の切り替え間隔（ミリ秒）
 * `AutoModeRandomized`  
   ランダム切り替え間隔モードのオン（`true`）・オフ（`false`）
-* `AutoRotation`
+* `AutoRotation`  
   IMUを内蔵している機種で表示を自動的に向きに追従させるか（`true`）・追従させないか（`false`）
 * `Orientation`  
   表示の向き（[`M5GFX::setRotation()`](https://docs.m5stack.com/ja/arduino/m5gfx/m5gfx_functions#setrotation)に渡す値）
+* `ClearBeforeDisplay`  
+  画像を表示する前に画面をクリアするか（`true`）・クリアしないか（`false`）
 
-設定ファイルがない場合は，自動モードはオフ（`false`），切り替え間隔は 3 秒（3000 ミリ秒），ランダム切り替え間隔モードはオフ（`false`），画面の向きに追従させる（`true`），表示の向きはデフォルトの表示の向きになります。
+設定ファイルがない場合は，自動モードはオフ（`false`），切り替え間隔は 3 秒（3000 ミリ秒），ランダム切り替え間隔モードはオフ（`false`），画面の向きに追従させる（`true`），表示の向きはデフォルトの表示の向き，画像を表示する前に画面をクリアしない（`false`）になります。
 
 ```json
 {
@@ -79,7 +81,8 @@ M5Stackシリーズでファイルシステム（LittleFS，microSD）上にあ�
   "AutoModeInterval": 3000,
   "AutoModeRandomized": false,
   "AutoRotation": false,
-  "Orientation": 1
+  "Orientation": 1,
+  "ClearBeforeDisplay": false
 }
 ```
 
@@ -122,7 +125,7 @@ IMUが使える場合は，画面の向きに合わせて表示が自動的に�
 起動すると以下の画面が表示されます。設定ファイルがない場合`Config:`の情報は表示されません。
 
 ```text
-Image Viewer v1.0.6
+Image Viewer v1.0.8
 Config:
  /image-viewer.json
  AutoMode: false
@@ -130,6 +133,7 @@ Config:
  Randomized: false
  AutoRotation: true
  Orientation: CW_0, CW_90, CW_180, CW_270, CCW_0, CCW_90, CCW_180, or CCW_270
+ ClearBeforeDisplay: false
 Mode:
  Manual, Auto, or Auto(Forced)
 Rotation:
@@ -144,7 +148,7 @@ Image Files:
 ファイルシステム上に画像ファイルがない場合は，以下のように表示されます。
 
 ```text
-Image Viewer v1.0.6
+Image Viewer v1.0.8
 Config:
  /image-viewer.json
  AutoMode: false
@@ -152,6 +156,7 @@ Config:
  Randomized: false
  AutoRotation: true
  Orientation: CW_0, CW_90, CW_180, CW_270, CCW_0, CCW_90, CCW_180, or CCW_270
+ ClearBeforeDisplay: false
 Mode:
  Manual, Auto, or Auto(Forced)
 Rotation:

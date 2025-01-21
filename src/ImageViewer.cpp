@@ -127,7 +127,7 @@ inline int32_t getTextAreaHeight(void) {
 #include <Arduino_JSON.h>
 #include <string.h>
 
-const char* ImageViewer::VERSION = "v1.0.6";
+const char* ImageViewer::VERSION = "v1.0.8";
 
 const char* ImageViewer::PATH_SEP = "/";
 
@@ -137,6 +137,7 @@ const char* ImageViewer::KEY_AUTO_MODE_INTERVAL = "AutoModeInterval";
 const char* ImageViewer::KEY_AUTO_MODE_RANDOMIZED = "AutoModeRandomized";
 const char* ImageViewer::KEY_AUTO_ROTATION = "AutoRotation";
 const char* ImageViewer::KEY_ORIENTATION = "Orientation";
+const char* ImageViewer::KEY_CLEAR_BEFORE_DISPLAY = "ClearBeforeDisplay";
 
 const float ImageViewer::GRAVITY_THRESHOLD = 0.9F;
 const String ImageViewer::ROOT_DIR(ImageViewer::PATH_SEP);
@@ -148,19 +149,23 @@ static const char* EXT_PNG = ".png";
 
 ImageViewer::ImageViewer(const String& rootDir, bool isAutoMode,
                          uint32_t autoModeInterval, bool isAutoModeRandomized,
-                         bool isAutoRotation)
+                         bool isAutoRotation, bool isClearBeforeDisplay)
     : _rootDir(rootDir.endsWith(PATH_SEP) ? rootDir : rootDir + PATH_SEP),
       _orientation(0),
       _isAutoMode(isAutoMode),
       _autoModeInterval(autoModeInterval),
       _isAutoModeRandomized(isAutoModeRandomized),
       _isAutoRotation(isAutoRotation),
-      _imageFiles{""},
+      _isClearBeforeDisplay(isClearBeforeDisplay),
       _nImageFiles(0),
       _pos(0),
       _prevUpdate(0),
-      _interval(autoModeInterval) {
+      _interval(autoModeInterval),
+      _bgColor(DEFAULT_BG_COLOR) {
     randomSeed(analogRead(0));
+    for (size_t i = 0; i < MAX_IMAGE_FILES; ++i) {
+        this->_imageFiles[i] = "";
+    }
 }
 
 ImageViewer::~ImageViewer(void) {
@@ -243,8 +248,8 @@ bool ImageViewer::begin(int bgColor) {
     M5.Lcd.setCursor(0, 0);
 
     delay(DEFAULT_START_INTERVAL_MS);
-    M5.Lcd.clear();
-    M5.Lcd.fillScreen(bgColor);
+    this->_bgColor = bgColor;
+    clear();
     if (this->_isAutoRotation) {
         updateOrientation();
     } else {
@@ -331,6 +336,9 @@ bool ImageViewer::updateOrientation(float threshold) {
 void ImageViewer::showImage(void) {
     const char* filename = this->_imageFiles[this->_pos].c_str();
     M5.Lcd.startWrite();
+    if (this->_isClearBeforeDisplay) {
+        clear();
+    }
     if (isJpeg(filename)) {
         M5.Lcd.drawJpgFile(filename, 0, 0, M5.Display.width(),
                            M5.Display.height(), 0, 0, 0.0F, 0.0F,
@@ -348,6 +356,10 @@ void ImageViewer::showImage(void) {
         M5.Lcd.println();
     }
     M5.Lcd.endWrite();
+}
+
+void ImageViewer::clear(void) {
+    M5.Lcd.clear(this->_bgColor);
 }
 
 bool ImageViewer::hasExt(const char* filename, const char* ext) const {
@@ -439,6 +451,7 @@ bool ImageViewer::parse(const char* config) {
     M5.Lcd.println();
     if (o.hasOwnProperty(KEY_AUTO_MODE_INTERVAL)) {
         this->_autoModeInterval = (uint32_t)o[KEY_AUTO_MODE_INTERVAL];
+        this->_interval = this->_autoModeInterval;
     }
     M5.Lcd.printf(" Interval: %dms", this->_autoModeInterval);
     M5.Lcd.println();
@@ -475,6 +488,12 @@ bool ImageViewer::parse(const char* config) {
         M5_LOGW("Default Orientation is not found");
     }
     M5.Lcd.printf(" Orientation: %s", getOrientationString(this->_orientation));
+    M5.Lcd.println();
+    if (o.hasOwnProperty(KEY_CLEAR_BEFORE_DISPLAY)) {
+        this->_isClearBeforeDisplay = (bool)o[KEY_CLEAR_BEFORE_DISPLAY];
+    }
+    M5.Lcd.printf(" ClearBeforeDisplay: %s",
+                  this->_isClearBeforeDisplay ? "true" : "false");
     M5.Lcd.println();
     return true;
 }

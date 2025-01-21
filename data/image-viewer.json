@@ -2,5 +2,6 @@
   "AutoMode": false,
   "AutoModeInterval": 3000,
   "AutoModeRandomized": false,
-  "AutoRotation": true
+  "AutoRotation": true,
+  "ClearBeforeDisplay": false
 }
