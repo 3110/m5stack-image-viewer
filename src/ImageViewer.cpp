@@ -127,7 +127,7 @@ inline int32_t getTextAreaHeight(void) {
 #include <Arduino_JSON.h>
 #include <string.h>
 
-const char* ImageViewer::VERSION = "v1.0.6";
+const char* ImageViewer::VERSION = "v1.0.7";
 
 const char* ImageViewer::PATH_SEP = "/";
 
