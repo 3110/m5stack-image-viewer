@@ -67,7 +67,7 @@ The following settings can be configured in the `data/image-viewer.json` configu
   Turn automatically adjusting the display orientation on (`true`) or off (`false`) for IMU included devices.
 * `Orientation`  
    Display Orientation(this value is passed to [`M5GFX::setRotation()`](https://docs.m5stack.com/ja/arduino/m5gfx/m5gfx_functions#setrotation))
-* `ClearBeforeDisplay`
+* `ClearBeforeDisplay`  
   Whether to clear the screen before displaying an image (`true`) or not (`false`).
 
 If there is no configuration file, the default settings are: auto mode is off (`false`), the switching interval is 3 seconds (3000 milliseconds), random switching interval mode is off (`false`), follow the screen orientation (`true`), the display orientation is the default display orientation of the model, and do not clear the screen before displaying an image (`false`).

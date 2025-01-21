@@ -70,7 +70,7 @@ M5Stackシリーズでファイルシステム（LittleFS，microSD）上にあ�
   IMUを内蔵している機種で表示を自動的に向きに追従させるか（`true`）・追従させないか（`false`）
 * `Orientation`  
   表示の向き（[`M5GFX::setRotation()`](https://docs.m5stack.com/ja/arduino/m5gfx/m5gfx_functions#setrotation)に渡す値）
-* `ClearBeforeDisplay`
+* `ClearBeforeDisplay`  
   画像を表示する前に画面をクリアするか（`true`）・クリアしないか（`false`）
 
 設定ファイルがない場合は，自動モードはオフ（`false`），切り替え間隔は 3 秒（3000 ミリ秒），ランダム切り替え間隔モードはオフ（`false`），画面の向きに追従させる（`true`），表示の向きはデフォルトの表示の向き，画像を表示する前に画面をクリアしない（`false`）になります。
