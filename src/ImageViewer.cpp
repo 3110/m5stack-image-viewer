@@ -494,5 +494,6 @@ bool ImageViewer::parse(const char* config) {
     }
     M5.Lcd.printf(" ClearBeforeDisplay: %s",
                   this->_isClearBeforeDisplay ? "true" : "false");
+    M5.Lcd.println();
     return true;
 }
