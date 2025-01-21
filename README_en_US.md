@@ -63,7 +63,7 @@ The following settings can be configured in the `data/image-viewer.json` configu
   Interval for switching images in auto display mode (milliseconds).
 * `AutoModeRandomized`  
   Turn random interval switching mode on (`true`) or off (`false`).
-* `AutoRotation`
+* `AutoRotation`  
   Turn automatically adjusting the display orientation on (`true`) or off (`false`) for IMU included devices.
 * `Orientation`  
    Display Orientation(this value is passed to [`M5GFX::setRotation()`](https://docs.m5stack.com/ja/arduino/m5gfx/m5gfx_functions#setrotation))

@@ -66,7 +66,7 @@ M5Stackシリーズでファイルシステム（LittleFS，microSD）上にあ�
   自動表示モードのときの画像の切り替え間隔（ミリ秒）
 * `AutoModeRandomized`  
   ランダム切り替え間隔モードのオン（`true`）・オフ（`false`）
-* `AutoRotation`
+* `AutoRotation`  
   IMUを内蔵している機種で表示を自動的に向きに追従させるか（`true`）・追従させないか（`false`）
 * `Orientation`  
   表示の向き（[`M5GFX::setRotation()`](https://docs.m5stack.com/ja/arduino/m5gfx/m5gfx_functions#setrotation)に渡す値）
