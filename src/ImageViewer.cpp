@@ -155,12 +155,14 @@ ImageViewer::ImageViewer(const String& rootDir, bool isAutoMode,
       _autoModeInterval(autoModeInterval),
       _isAutoModeRandomized(isAutoModeRandomized),
       _isAutoRotation(isAutoRotation),
-      _imageFiles{""},
       _nImageFiles(0),
       _pos(0),
       _prevUpdate(0),
       _interval(autoModeInterval) {
     randomSeed(analogRead(0));
+    for (size_t i = 0; i < MAX_IMAGE_FILES; ++i) {
+        this->_imageFiles[i] = "";
+    }
 }
 
 ImageViewer::~ImageViewer(void) {
