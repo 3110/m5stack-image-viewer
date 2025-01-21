@@ -125,7 +125,7 @@ IMUが使える場合は，画面の向きに合わせて表示が自動的に�
 起動すると以下の画面が表示されます。設定ファイルがない場合`Config:`の情報は表示されません。
 
 ```text
-Image Viewer v1.0.6
+Image Viewer v1.0.7
 Config:
  /image-viewer.json
  AutoMode: false
@@ -133,6 +133,7 @@ Config:
  Randomized: false
  AutoRotation: true
  Orientation: CW_0, CW_90, CW_180, CW_270, CCW_0, CCW_90, CCW_180, or CCW_270
+ ClearBeforeDisplay: false
 Mode:
  Manual, Auto, or Auto(Forced)
 Rotation:
@@ -147,7 +148,7 @@ Image Files:
 ファイルシステム上に画像ファイルがない場合は，以下のように表示されます。
 
 ```text
-Image Viewer v1.0.6
+Image Viewer v1.0.7
 Config:
  /image-viewer.json
  AutoMode: false
@@ -155,6 +156,7 @@ Config:
  Randomized: false
  AutoRotation: true
  Orientation: CW_0, CW_90, CW_180, CW_270, CCW_0, CCW_90, CCW_180, or CCW_270
+ ClearBeforeDisplay: false
 Mode:
  Manual, Auto, or Auto(Forced)
 Rotation:
