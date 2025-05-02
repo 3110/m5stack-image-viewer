@@ -50,8 +50,8 @@ The default display orientation is different for each model.
 | M5Cardputer      | env:m5stack-cardputer(-sd) | 1                   |
 | M5DinMeter       | env:m5stack-din-meter      | 0                   |
 | CoreInk          | env:m5stack-coreink        | 0                   |
-| M5Paper          | env:m5stack-paper(-sd)     | 1                   |
-| M5PaperS3        | env:m5stack-paper(-sd)     | 1                   |
+| M5Paper          | env:m5stack-paper(-sd)     | 0                   |
+| M5PaperS3        | env:m5stack-paper(-sd)     | 0                   |
 
 ## Configuration File
 
