@@ -30,7 +30,7 @@ Compile in the [PlatformIO IDE](https://platformio.org/platformio-ide) environme
 | M5DinMeter       | env:m5stack-din-meter       |
 | CoreInk          | env:m5stack-coreink         |
 | M5Paper          | env:m5stack-paper(-sd)      |
-| M5PaperS3        | env:m5stack-papers3(-sd)      |
+| M5PaperS3        | env:m5stack-papers3(-sd)    |
 
 
 The default display orientation is different for each model.
