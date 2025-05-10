@@ -54,7 +54,7 @@ M5Stackシリーズでファイルシステム（LittleFS，microSD）上にあ�
 | M5DinMeter      | env:m5stack-din-meter      | 0                      |
 | CoreInk         | env:m5stack-coreink        | 0                      |
 | M5Paper         | env:m5stack-paper(-sd)     | 0                      |
-| M5PaperS3       | env:m5stack-paper(-sd)     | 0                      |
+| M5PaperS3       | env:m5stack-papers3(-sd)   | 0                      |
 
 ## 設定ファイル
 
