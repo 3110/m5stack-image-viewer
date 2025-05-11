@@ -126,7 +126,7 @@ IMUが使える場合は，画面の向きに合わせて表示が自動的に�
 起動すると以下の画面が表示されます。設定ファイルがない場合`Config:`の情報は表示されません。
 
 ```text
-Image Viewer v1.0.8
+Image Viewer v1.0.11
 Config:
  /image-viewer.json
  AutoMode: false
@@ -149,7 +149,7 @@ Image Files:
 ファイルシステム上に画像ファイルがない場合は，以下のように表示されます。
 
 ```text
-Image Viewer v1.0.8
+Image Viewer v1.0.11
 Config:
  /image-viewer.json
  AutoMode: false
