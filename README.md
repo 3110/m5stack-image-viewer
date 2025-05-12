@@ -9,7 +9,7 @@ M5Stackシリーズでファイルシステム（LittleFS，microSD）上にあ�
 * 手動（Manul）モード  
   Aボタン（正順）・Cボタン（逆順）を押すたびに画像を切り替えて表示します。
   M5Dialの場合は，ダイヤルを左右に回すことで逆順・正順に画像を切り替えます。
-  CoreInk・M5Paper・M5PaperS3の場合は，画面を左右にフリックすることで逆順・正順に画像を切り替えます。
+  CoreInk・M5Paper・M5PaperS3・M5Tab5の場合は，画面を左右にフリックすることで逆順・正順に画像を切り替えます。
 * 自動（Auto）モード  
   設定ファイルで指定した間隔（ミリ秒）で表示します。指定した表示間隔を最大値としたランダムの間隔で表示することもできます。
 
@@ -35,6 +35,7 @@ M5Stackシリーズでファイルシステム（LittleFS，microSD）上にあ�
 | CoreInk         | env:m5stack-coreink        |
 | M5Paper         | env:m5stack-paper(-sd)     |
 | M5PaperS3       | env:m5stack-papers3(-sd)   |
+| M5Tab5          | env:m5stack-tab5(-sd)      |
 
 デフォルトの表示の向きは機種ごとに違います。
 
