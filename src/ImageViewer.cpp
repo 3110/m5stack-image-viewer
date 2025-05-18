@@ -90,7 +90,7 @@ inline void M5_UPDATE(void) {
 
 inline int32_t getDirection(void) {
 #if defined(ARDUINO_M5STACK_COREINK) || defined(ARDUINO_M5STACK_PAPER) || \
-    defined(ARDUINO_M5STACK_PAPERS3)
+    defined(ARDUINO_M5STACK_PAPERS3) || defined(ARDUINO_M5STACK_TAB5)
     if (M5.Touch.getDetail().wasFlicked()) {
         return M5.Touch.getDetail().distanceX() > 0 ? 1 : -1;
     } else {
@@ -127,7 +127,7 @@ inline int32_t getTextAreaHeight(void) {
 #include <Arduino_JSON.h>
 #include <string.h>
 
-const char* ImageViewer::VERSION = "v1.0.10";
+const char* ImageViewer::VERSION = "v1.0.11";
 
 const char* ImageViewer::PATH_SEP = "/";
 
@@ -187,6 +187,8 @@ bool ImageViewer::begin(int bgColor) {
     if (M5.getBoard() == m5::board_t::board_M5Paper ||
         M5.getBoard() == m5::board_t::board_M5PaperS3) {
         M5.Lcd.setTextSize(2);
+    } else if (M5.getBoard() == m5::board_t::board_M5Tab5) {
+        M5.Lcd.setTextSize(3);
     }
 
     M5.Lcd.setTextScroll(true);
@@ -230,6 +232,10 @@ bool ImageViewer::begin(int bgColor) {
                 M5.Imu.setAxisOrder(m5::IMU_Class::axis_y_pos,
                                     m5::IMU_Class::axis_x_pos,
                                     m5::IMU_Class::axis_z_pos);
+            } else if (M5.getBoard() == m5::board_t::board_M5Tab5) {
+                M5.Imu.setAxisOrder(m5::IMU_Class::axis_x_neg,
+                                    m5::IMU_Class::axis_y_pos,
+                                    m5::IMU_Class::axis_z_neg);
             }
         } else {
             this->_isAutoRotation = false;

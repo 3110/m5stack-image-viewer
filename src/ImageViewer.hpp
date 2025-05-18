@@ -5,29 +5,54 @@
 
 // clang-format off
 #if defined(IV_FS_SD)
+#if defined(ARDUINO_M5STACK_TAB5)
+#include <SD_MMC.h>
+#define IV_FS SD_MMC
+#else
 #include <SD.h>
+#define IV_FS SD
+#endif
 #else
 #include <LittleFS.h>
+#define IV_FS LittleFS
 #endif
 #include <M5Unified.h>
 // clang-format on
 
 #if defined(IV_FS_SD)
-#define IV_FS             SD
-#define SD_FREQUENCY      15000000
+#if defined(ARDUINO_M5STACK_TAB5)
+inline bool FS_BEGIN() {
+    if (!IV_FS.setPins(GPIO_NUM_43, GPIO_NUM_44, GPIO_NUM_39, GPIO_NUM_40,
+                       GPIO_NUM_41, GPIO_NUM_42)) {
+        return false;
+    }
+    return IV_FS.begin();
+}
+#else
+#define SD_FREQUENCY 15000000
+inline bool FS_BEGIN() {
+    SPI.begin(M5.getPin(m5::pin_name_t::sd_spi_sclk),
+              M5.getPin(m5::pin_name_t::sd_spi_miso),
+              M5.getPin(m5::pin_name_t::sd_spi_mosi),
+              M5.getPin(m5::pin_name_t::sd_spi_ss));
+    return IV_FS.begin(M5.getPin(m5::pin_name_t::sd_spi_ss), SPI, SD_FREQUENCY);
+}
+#endif
+#else
+#define FORMAT_FS_IF_FAILED true
+inline bool FS_BEGIN() {
+    return IV_FS.begin(FORMAT_FS_IF_FAILED);
+}
+#endif
+
+#if defined(IV_FS_SD)
 #define SD_MOUNT_RETRY    5
 #define SD_MOUNT_DELAY_MS 500
-#define TARGET_SPI        SPI
 inline bool IVS_FS_BEGIN() {
     M5.Lcd.print("Mounting SD Card ...");
-    TARGET_SPI.begin(M5.getPin(m5::pin_name_t::sd_spi_sclk),
-                     M5.getPin(m5::pin_name_t::sd_spi_miso),
-                     M5.getPin(m5::pin_name_t::sd_spi_mosi),
-                     M5.getPin(m5::pin_name_t::sd_spi_ss));
     uint8_t retry = 0;
     for (retry = 0; retry < SD_MOUNT_RETRY; ++retry) {
-        if (IV_FS.begin(M5.getPin(m5::pin_name_t::sd_spi_ss), TARGET_SPI,
-                        SD_FREQUENCY)) {
+        if (FS_BEGIN()) {
             break;
         }
         delay(SD_MOUNT_DELAY_MS);
@@ -40,10 +65,8 @@ inline bool IVS_FS_BEGIN() {
     return succeeded;
 }
 #else
-#define IV_FS               LittleFS
-#define FORMAT_FS_IF_FAILED true
 inline bool IVS_FS_BEGIN() {
-    return IV_FS.begin(FORMAT_FS_IF_FAILED);
+    return FS_BEGIN();
 }
 #endif
 
