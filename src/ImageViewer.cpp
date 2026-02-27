@@ -410,13 +410,21 @@ uint8_t ImageViewer::detectOrientation(float threshold) {
         float ax, ay, az;
         M5.Imu.getAccel(&ax, &ay, &az);
         M5_LOGV("Accel: ax: %f, ay: %f, az: %f", ax, ay, az);
-        if (ay >= threshold) {
+
+        float mag_xy = sqrtf(ax * ax + ay * ay);
+        if (mag_xy < 0.3f)
+            return this->_orientation;
+
+        float nx = ax / mag_xy;
+        float ny = ay / mag_xy;
+
+        if (ny >= threshold) {
             return 0;
-        } else if (ax >= threshold) {
+        } else if (nx >= threshold) {
             return 1;
-        } else if (ax <= -threshold) {
+        } else if (nx <= -threshold) {
             return 3;
-        } else if (ay <= -threshold) {
+        } else if (ny <= -threshold) {
             return 2;
         }
     }
