@@ -77,11 +77,15 @@ inline int16_t getDirection(void) {
 #else
 inline void M5_BEGIN(m5::M5Unified::config_t cfg) {
     M5.begin(cfg);
+#if defined(ENABLE_M5STICK_S3_SPEAKER_NOISE_WORKAROUND)
+    M5.Power.setExtOutput(false);
+    M5_LOGW("Work around for M5StickS3 is enabled.");
+#endif
 }
 
 inline void M5_BEGIN(void) {
     auto cfg = M5.config();
-    M5.begin(cfg);
+    M5_BEGIN(cfg);
 }
 
 inline void M5_UPDATE(void) {
@@ -224,7 +228,8 @@ bool ImageViewer::begin(int bgColor) {
             M5.Lcd.println(" Auto");
             if (M5.getBoard() == m5::board_t::board_M5Stack ||
                 M5.getBoard() == m5::board_t::board_M5StackCore2 ||
-                M5.getBoard() == m5::board_t::board_M5StackCoreS3) {
+                M5.getBoard() == m5::board_t::board_M5StackCoreS3 ||
+                M5.getBoard() == m5::board_t::board_M5StickS3) {
                 M5.Imu.setAxisOrder(m5::IMU_Class::axis_y_pos,
                                     m5::IMU_Class::axis_x_neg,
                                     m5::IMU_Class::axis_z_pos);

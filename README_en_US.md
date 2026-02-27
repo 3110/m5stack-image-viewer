@@ -46,6 +46,7 @@ The default display orientation is different for each model.
 | M5Stick C        | env:m5stick-c              | 0                   |
 | M5Stick C Plus   | env:m5stick-c-plus         | 0                   |
 | M5Stick C Plus2  | env:m5stick-c-plus2        | 0                   |
+| M5Stick S3       | env:m5stick-s3             | 0                   |
 | M5ATOM S3        | env:m5stack-atoms3         | 0                   |
 | M5Dial           | env:m5stack-dial           | 0                   |
 | M5Cardputer      | env:m5stack-cardputer(-sd) | 1                   |
