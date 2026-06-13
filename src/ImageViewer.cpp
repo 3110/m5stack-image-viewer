@@ -21,7 +21,7 @@ inline void M5_UPDATE(void) {
 #include "M5Encoder.hpp"
 
 static M5Encoder encoder;
-static int32_t prev_dial_pos = 0;
+static int16_t prev_dial_pos = 0;
 
 inline int16_t getEncoderOffset(void) {
     switch (M5.getBoard()) {
@@ -34,11 +34,12 @@ inline int16_t getEncoderOffset(void) {
     }
 }
 
-inline int32_t getDirection(void) {
+inline int16_t getDirection(void) {
     // const long pos = M5Dial.Encoder.read();
     const int16_t pos = encoder.read();
+    const int16_t delta = pos - prev_dial_pos;
     M5_LOGV("Dial: %d -> %d", prev_dial_pos, pos);
-    if (abs(prev_dial_pos - pos) >= getEncoderOffset()) {
+    if (abs(delta) >= getEncoderOffset()) {
         const int16_t direction = pos - prev_dial_pos > 0 ? 1 : -1;
         prev_dial_pos = pos;
         return direction;
@@ -300,7 +301,7 @@ bool ImageViewer::update(void) {
     }
 
     const uint32_t t = millis();
-    int32_t direction = getDirection();
+    int16_t direction = getDirection();
     if (direction == 0 && this->_isAutoMode &&
         t - this->_prevUpdate >= this->_interval) {
         direction = 1;
