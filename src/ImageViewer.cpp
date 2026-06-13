@@ -351,6 +351,9 @@ bool ImageViewer::updateOrientation(float threshold) {
 }
 
 void ImageViewer::showImage(void) {
+    if (this->_nImageFiles == 0) {
+        return;
+    }
     const char* filename = this->_imageFiles[this->_pos].c_str();
     M5.Lcd.startWrite();
     if (this->_isClearBeforeDisplay) {
