@@ -138,6 +138,27 @@ constexpr const char* const EXT_JPG = ".jpg";
 constexpr const char* const EXT_JPEG = ".jpeg";
 constexpr const char* const EXT_BMP = ".bmp";
 constexpr const char* const EXT_PNG = ".png";
+
+class LcdWriteGuard {
+public:
+    explicit LcdWriteGuard(bool enabled = true) : _enabled(enabled) {
+        if (_enabled) {
+            M5.Lcd.startWrite();
+        }
+    }
+
+    ~LcdWriteGuard() {
+        if (_enabled) {
+            M5.Lcd.endWrite();
+        }
+    }
+
+    LcdWriteGuard(const LcdWriteGuard&) = delete;
+    LcdWriteGuard& operator=(const LcdWriteGuard&) = delete;
+
+private:
+    bool _enabled;
+};
 }  // namespace
 
 ImageViewer::ImageViewer(const String& rootDir, bool isAutoMode,
@@ -196,52 +217,56 @@ bool ImageViewer::begin(int bgColor) {
     }
     M5.Lcd.setFileStorage(IV_FS);
 
-    M5.Lcd.printf("Image Viewer %s", VERSION);
-    M5.Lcd.println();
-    if (!parse()) {
-        return false;
-    }
+    {
+        LcdWriteGuard guard(hasEPaperDisplay());
 
-    M5_UPDATE();
-    M5.Lcd.println("Mode:");
-    if (M5.BtnA.isPressed()) {
-        this->_isAutoMode = true;  // overriding the setting
-        M5.Lcd.println(" Auto(Forced)");
-    } else {
-        M5.Lcd.println(this->_isAutoMode ? " Auto" : " Manual");
-    }
+        M5.Lcd.printf("Image Viewer %s", VERSION);
+        M5.Lcd.println();
+        if (!parse()) {
+            return false;
+        }
 
-    M5.Lcd.println("Rotation:");
-    if (this->_isAutoRotation) {
-        if (M5.Imu.isEnabled()) {
-            M5.Lcd.println(" Auto");
-            if (M5.getBoard() == m5::board_t::board_M5Stack ||
-                M5.getBoard() == m5::board_t::board_M5StackCore2 ||
-                M5.getBoard() == m5::board_t::board_M5StackCoreS3 ||
-                M5.getBoard() == m5::board_t::board_M5StickS3) {
-                M5.Imu.setAxisOrder(m5::IMU_Class::axis_y_pos,
-                                    m5::IMU_Class::axis_x_neg,
-                                    m5::IMU_Class::axis_z_pos);
-            } else if (M5.getBoard() == m5::board_t::board_M5PaperS3) {
-                M5.Imu.setAxisOrder(m5::IMU_Class::axis_y_pos,
-                                    m5::IMU_Class::axis_x_pos,
-                                    m5::IMU_Class::axis_z_pos);
-            } else if (M5.getBoard() == m5::board_t::board_M5Tab5) {
-                M5.Imu.setAxisOrder(m5::IMU_Class::axis_x_neg,
-                                    m5::IMU_Class::axis_y_pos,
-                                    m5::IMU_Class::axis_z_neg);
+        M5_UPDATE();
+        M5.Lcd.println("Mode:");
+        if (M5.BtnA.isPressed()) {
+            this->_isAutoMode = true;  // overriding the setting
+            M5.Lcd.println(" Auto(Forced)");
+        } else {
+            M5.Lcd.println(this->_isAutoMode ? " Auto" : " Manual");
+        }
+
+        M5.Lcd.println("Rotation:");
+        if (this->_isAutoRotation) {
+            if (M5.Imu.isEnabled()) {
+                M5.Lcd.println(" Auto");
+                if (M5.getBoard() == m5::board_t::board_M5Stack ||
+                    M5.getBoard() == m5::board_t::board_M5StackCore2 ||
+                    M5.getBoard() == m5::board_t::board_M5StackCoreS3 ||
+                    M5.getBoard() == m5::board_t::board_M5StickS3) {
+                    M5.Imu.setAxisOrder(m5::IMU_Class::axis_y_pos,
+                                        m5::IMU_Class::axis_x_neg,
+                                        m5::IMU_Class::axis_z_pos);
+                } else if (M5.getBoard() == m5::board_t::board_M5PaperS3) {
+                    M5.Imu.setAxisOrder(m5::IMU_Class::axis_y_pos,
+                                        m5::IMU_Class::axis_x_pos,
+                                        m5::IMU_Class::axis_z_pos);
+                } else if (M5.getBoard() == m5::board_t::board_M5Tab5) {
+                    M5.Imu.setAxisOrder(m5::IMU_Class::axis_x_neg,
+                                        m5::IMU_Class::axis_y_pos,
+                                        m5::IMU_Class::axis_z_neg);
+                }
+            } else {
+                this->_isAutoRotation = false;
+                M5.Lcd.println(" No(IMU disabled)");
             }
         } else {
-            this->_isAutoRotation = false;
-            M5.Lcd.println(" No(IMU disabled)");
+            M5.Lcd.println(" No");
         }
-    } else {
-        M5.Lcd.println(" No");
-    }
 
-    delay(DEFAULT_START_INTERVAL_MS);
-    if (!setImageFileList()) {
-        return false;
+        delay(DEFAULT_START_INTERVAL_MS);
+        if (!setImageFileList()) {
+            return false;
+        }
     }
 
     M5.Lcd.clearScrollRect();
@@ -341,8 +366,11 @@ void ImageViewer::showImage(void) {
     if (this->_nImageFiles == 0) {
         return;
     }
+
     const char* filename = this->_imageFiles[this->_pos].c_str();
-    M5.Lcd.startWrite();
+
+    LcdWriteGuard guard;
+
     if (this->_isClearBeforeDisplay) {
         clear();
     }
@@ -362,7 +390,6 @@ void ImageViewer::showImage(void) {
         M5.Lcd.printf("ignore: %s", filename);
         M5.Lcd.println();
     }
-    M5.Lcd.endWrite();
 }
 
 void ImageViewer::clear(void) {
