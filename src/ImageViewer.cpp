@@ -509,29 +509,56 @@ bool ImageViewer::parse(const char* config) {
         M5.Lcd.println(" E: parse");
         return false;
     }
+
     if (o.hasOwnProperty(KEY_AUTO_MODE)) {
-        this->_isAutoMode = (bool)o[KEY_AUTO_MODE];
+        JSONVar v = o[KEY_AUTO_MODE];
+        if (JSON.typeof(v) == "boolean") {
+            this->_isAutoMode = static_cast<bool>(v);
+        } else {
+            M5_LOGE("Illegal AutoMode Type: %s", JSON.typeof(v).c_str());
+        }
     }
     M5.Lcd.printf(" AutoMode: %s", this->_isAutoMode ? "true" : "false");
     M5.Lcd.println();
+
     if (o.hasOwnProperty(KEY_AUTO_MODE_INTERVAL)) {
-        this->_autoModeInterval = (uint32_t)o[KEY_AUTO_MODE_INTERVAL];
-        this->_interval = this->_autoModeInterval;
+        JSONVar v = o[KEY_AUTO_MODE_INTERVAL];
+        if (JSON.typeof(v) == "number") {
+            this->_autoModeInterval = static_cast<uint32_t>((int)v);
+            this->_interval = this->_autoModeInterval;
+        } else {
+            M5_LOGE("Illegal AutoModeInterval Type: %s",
+                    JSON.typeof(v).c_str());
+        }
     }
     M5.Lcd.printf(" Interval: %dms", this->_autoModeInterval);
     M5.Lcd.println();
+
     if (o.hasOwnProperty(KEY_AUTO_MODE_RANDOMIZED)) {
-        this->_isAutoModeRandomized = (bool)o[KEY_AUTO_MODE_RANDOMIZED];
+        JSONVar v = o[KEY_AUTO_MODE_RANDOMIZED];
+        if (JSON.typeof(v) == "boolean") {
+            this->_isAutoModeRandomized = static_cast<bool>(v);
+        } else {
+            M5_LOGE("Illegal AutoModeRandomized Type: %s",
+                    JSON.typeof(v).c_str());
+        }
     }
     M5.Lcd.printf(" Randomized: %s",
                   this->_isAutoModeRandomized ? "true" : "false");
     M5.Lcd.println();
+
     if (o.hasOwnProperty(KEY_AUTO_ROTATION)) {
-        this->_isAutoRotation = (bool)o[KEY_AUTO_ROTATION];
+        JSONVar v = o[KEY_AUTO_ROTATION];
+        if (JSON.typeof(v) == "boolean") {
+            this->_isAutoRotation = static_cast<bool>(v);
+        } else {
+            M5_LOGE("Illegal AutoRotation Type: %s", JSON.typeof(v).c_str());
+        }
     }
     M5.Lcd.printf(" AutoRotation: %s",
                   this->_isAutoRotation ? "true" : "false");
     M5.Lcd.println();
+
     if (o.hasOwnProperty(KEY_ORIENTATION)) {
         JSONVar orientationVar = o[KEY_ORIENTATION];
         if (JSON.typeof(orientationVar) == "number") {
@@ -554,11 +581,19 @@ bool ImageViewer::parse(const char* config) {
     }
     M5.Lcd.printf(" Orientation: %s", getOrientationString(this->_orientation));
     M5.Lcd.println();
+
     if (o.hasOwnProperty(KEY_CLEAR_BEFORE_DISPLAY)) {
-        this->_isClearBeforeDisplay = (bool)o[KEY_CLEAR_BEFORE_DISPLAY];
+        JSONVar v = o[KEY_CLEAR_BEFORE_DISPLAY];
+        if (JSON.typeof(v) == "boolean") {
+            this->_isClearBeforeDisplay = static_cast<bool>(v);
+        } else {
+            M5_LOGE("Illegal ClearBeforeDisplay Type: %s",
+                    JSON.typeof(v).c_str());
+        }
     }
     M5.Lcd.printf(" ClearBeforeDisplay: %s",
                   this->_isClearBeforeDisplay ? "true" : "false");
     M5.Lcd.println();
+
     return true;
 }
