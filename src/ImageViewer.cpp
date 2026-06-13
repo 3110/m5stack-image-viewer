@@ -48,7 +48,7 @@ inline int16_t getDirection(void) {
     }
 }
 #else
-inline int32_t getDirection(void) {
+inline int16_t getDirection(void) {
     switch (M5.getBoard()) {
         case m5::board_t::board_M5Paper:
         case m5::board_t::board_M5PaperS3:
