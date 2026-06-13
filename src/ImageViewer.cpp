@@ -460,11 +460,27 @@ bool ImageViewer::parse(const char* config) {
         M5.Lcd.println(" E: failed to open");
         return false;
     }
-    uint8_t buf[f.size()] = {0};
-    f.read(buf, sizeof(buf));
+
+    const size_t size = f.size();
+    if (size == 0) {
+        M5.Lcd.println(" E: empty config");
+        f.close();
+        return false;
+    }
+    if (f.size() > MAX_CONFIG_SIZE) {
+        M5.Lcd.println(" E: config too large");
+        f.close();
+        return false;
+    }
+
+    String json;
+    json.reserve(size + 1);
+    while (f.available()) {
+        json += static_cast<char>(f.read());
+    }
     f.close();
 
-    JSONVar o = JSON.parse((const char*)buf);
+    JSONVar o = JSON.parse(json);
     if (JSON.typeof(o) == "undefined") {
         M5.Lcd.println(" E: parse");
         return false;

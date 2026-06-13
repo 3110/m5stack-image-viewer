@@ -107,6 +107,7 @@ public:
     static const char* KEY_ORIENTATION;
     static const char* KEY_CLEAR_BEFORE_DISPLAY;
 
+    static const size_t MAX_CONFIG_SIZE = 1024;
     static const size_t MAX_IMAGE_FILES = 50;
     static const bool DEFAULT_AUTO_MODE = false;
     static const uint32_t DEFAULT_START_INTERVAL_MS = 3000;
