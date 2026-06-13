@@ -1,80 +1,5 @@
 #include "ImageViewer.hpp"
 
-#if defined(ARDUINO_M5STACK_DIAL) || defined(ARDUINO_M5STACK_DIN_METER)
-#include "M5Encoder.hpp"
-
-#if defined(ARDUINO_M5STACK_DIAL)
-inline int16_t getEncoderOffset(void) {
-    return 4;
-}
-
-inline int32_t getTextAreaX(void) {
-    return 35;
-}
-
-inline int32_t getTextAreaY(void) {
-    return 35;
-}
-
-inline int32_t getTextAreaWidth(void) {
-    return 170;
-}
-
-inline int32_t getTextAreaHeight(void) {
-    return 170;
-}
-#else
-inline int16_t getEncoderOffset(void) {
-    return 2;
-}
-
-inline int32_t getTextAreaX(void) {
-    return 0;
-}
-
-inline int32_t getTextAreaY(void) {
-    return 0;
-}
-
-inline int32_t getTextAreaWidth(void) {
-    return M5.Lcd.width();
-}
-
-inline int32_t getTextAreaHeight(void) {
-    return M5.Lcd.height();
-}
-#endif
-
-static M5Encoder encoder;
-static int16_t prev_dial_pos = 0;
-
-inline void M5_BEGIN(m5::M5Unified::config_t cfg) {
-    M5.begin(cfg);
-    encoder.begin();
-}
-
-inline void M5_BEGIN(void) {
-    auto cfg = M5.config();
-    M5_BEGIN(cfg);
-}
-
-inline void M5_UPDATE(void) {
-    M5.update();
-}
-
-inline int16_t getDirection(void) {
-    // const long pos = M5Dial.Encoder.read();
-    const int16_t pos = encoder.read();
-    M5_LOGV("Dial: %d -> %d", prev_dial_pos, pos);
-    if (abs(prev_dial_pos - pos) >= getEncoderOffset()) {
-        const int16_t direction = pos - prev_dial_pos > 0 ? 1 : -1;
-        prev_dial_pos = pos;
-        return direction;
-    } else {
-        return 0;
-    }
-}
-#else
 inline void M5_BEGIN(m5::M5Unified::config_t cfg) {
     M5.begin(cfg);
 #if defined(ENABLE_M5STICK_S3_SPEAKER_NOISE_WORKAROUND)
@@ -92,41 +17,103 @@ inline void M5_UPDATE(void) {
     M5.update();
 }
 
-inline int32_t getDirection(void) {
-#if defined(ARDUINO_M5STACK_COREINK) || defined(ARDUINO_M5STACK_PAPER) || \
-    defined(ARDUINO_M5STACK_PAPERS3) || defined(ARDUINO_M5STACK_TAB5)
-    if (M5.Touch.getDetail().wasFlicked()) {
-        return M5.Touch.getDetail().distanceX() > 0 ? 1 : -1;
-    } else {
-        return 0;
+#if defined(ARDUINO_M5STACK_DIAL) || defined(ARDUINO_M5STACK_DIN_METER)
+#include "M5Encoder.hpp"
+
+static M5Encoder encoder;
+static int32_t prev_dial_pos = 0;
+
+inline int16_t getEncoderOffset(void) {
+    switch (M5.getBoard()) {
+        case m5::board_t::board_M5Dial:
+            return 4;
+        case m5::board_t::board_M5DinMeter:
+            return 2;
+        default:
+            return 0;
     }
-#else
-    if (M5.BtnA.wasClicked()) {
-        return 1;
-    } else if (M5.BtnC.wasClicked()) {
-        return -1;
-    } else {
-        return 0;
-    }
-#endif
 }
 
+inline int32_t getDirection(void) {
+    // const long pos = M5Dial.Encoder.read();
+    const int16_t pos = encoder.read();
+    M5_LOGV("Dial: %d -> %d", prev_dial_pos, pos);
+    if (abs(prev_dial_pos - pos) >= getEncoderOffset()) {
+        const int16_t direction = pos - prev_dial_pos > 0 ? 1 : -1;
+        prev_dial_pos = pos;
+        return direction;
+    } else {
+        return 0;
+    }
+}
+#else
+inline int32_t getDirection(void) {
+    switch (M5.getBoard()) {
+        case m5::board_t::board_M5StackCoreInk:
+        case m5::board_t::board_M5Paper:
+        case m5::board_t::board_M5PaperS3:
+        case m5::board_t::board_M5Tab5:
+            if (M5.Touch.getDetail().wasFlicked()) {
+                return M5.Touch.getDetail().distanceX() > 0 ? 1 : -1;
+            } else {
+                return 0;
+            }
+        default:
+            if (M5.BtnA.wasClicked()) {
+                return 1;
+            } else if (M5.BtnC.wasClicked()) {
+                return -1;
+            } else {
+                return 0;
+            }
+    }
+}
+#endif
+
 inline int32_t getTextAreaX(void) {
-    return 0;
+    switch (M5.getBoard()) {
+        case m5::board_t::board_M5Dial:
+            return 35;
+        default:
+            return 0;
+    }
 }
 
 inline int32_t getTextAreaY(void) {
-    return 0;
+    switch (M5.getBoard()) {
+        case m5::board_t::board_M5Dial:
+            return 35;
+        default:
+            return 0;
+    }
 }
 
 inline int32_t getTextAreaWidth(void) {
-    return M5.Lcd.width();
+    switch (M5.getBoard()) {
+        case m5::board_t::board_M5Dial:
+            return 170;
+        default:
+            return M5.Lcd.width();
+    }
 }
 
 inline int32_t getTextAreaHeight(void) {
-    return M5.Lcd.height();
+    switch (M5.getBoard()) {
+        case m5::board_t::board_M5Dial:
+            return 170;
+        default:
+            return M5.Lcd.height();
+    }
 }
+
+inline bool hasEPaperDisplay(void) {
+#if defined(ARDUINO_M5STACK_COREINK) || defined(ARDUINO_M5STACK_PAPER) || \
+    defined(ARDUINO_M5STACK_PAPERS3)
+    return true;
+#else
+    return false;
 #endif
+}
 
 #include <Arduino_JSON.h>
 #include <string.h>
@@ -178,14 +165,14 @@ ImageViewer::~ImageViewer(void) {
 }
 
 bool ImageViewer::begin(int bgColor) {
-    M5_BEGIN();
+    auto cfg = M5.config();
+    cfg.clear_display = !hasEPaperDisplay();
+    M5_BEGIN(cfg);
 
     this->_orientation = M5.Lcd.getRotation();
     M5.Lcd.setRotation(this->_orientation);
 
-    if (M5.getBoard() == m5::board_t::board_M5StackCoreInk ||
-        M5.getBoard() == m5::board_t::board_M5Paper ||
-        M5.getBoard() == m5::board_t::board_M5PaperS3) {
+    if (hasEPaperDisplay()) {
         M5.Lcd.invertDisplay(false);
         M5.Lcd.setEpdMode(epd_mode_t::epd_quality);
     }
