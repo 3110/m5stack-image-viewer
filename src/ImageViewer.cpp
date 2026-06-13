@@ -306,7 +306,7 @@ bool ImageViewer::update(void) {
 
 bool ImageViewer::setImageFileList(void) {
     File root = IV_FS.open(this->_rootDir, "r");
-    if (!root and !root.isDirectory()) {
+    if (!root || !root.isDirectory()) {
         M5.Lcd.printf("Failed to open \"%s\"", this->_rootDir.c_str());
         M5.Lcd.println();
         return false;
