@@ -40,7 +40,7 @@ inline int16_t getDirection(void) {
     const int16_t delta = pos - prev_dial_pos;
     M5_LOGV("Dial: %d -> %d", prev_dial_pos, pos);
     if (abs(delta) >= getEncoderOffset()) {
-        const int16_t direction = pos - prev_dial_pos > 0 ? 1 : -1;
+        const int16_t direction = delta > 0 ? 1 : -1;
         prev_dial_pos = pos;
         return direction;
     } else {
@@ -486,7 +486,7 @@ bool ImageViewer::parse(const char* config) {
         f.close();
         return false;
     }
-    if (f.size() > MAX_CONFIG_SIZE) {
+    if (size > MAX_CONFIG_SIZE) {
         M5.Lcd.println(" E: config too large");
         f.close();
         return false;
