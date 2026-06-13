@@ -131,25 +131,27 @@ inline int32_t getTextAreaHeight(void) {
 #include <Arduino_JSON.h>
 #include <string.h>
 
-const char* ImageViewer::VERSION = "v1.0.12";
+const char* const ImageViewer::VERSION = "v1.0.12";
 
-const char* ImageViewer::PATH_SEP = "/";
+const char* const ImageViewer::PATH_SEP = "/";
 
-const char* ImageViewer::DEFAULT_CONFIG_NAME = "image-viewer.json";
-const char* ImageViewer::KEY_AUTO_MODE = "AutoMode";
-const char* ImageViewer::KEY_AUTO_MODE_INTERVAL = "AutoModeInterval";
-const char* ImageViewer::KEY_AUTO_MODE_RANDOMIZED = "AutoModeRandomized";
-const char* ImageViewer::KEY_AUTO_ROTATION = "AutoRotation";
-const char* ImageViewer::KEY_ORIENTATION = "Orientation";
-const char* ImageViewer::KEY_CLEAR_BEFORE_DISPLAY = "ClearBeforeDisplay";
+const char* const ImageViewer::DEFAULT_CONFIG_NAME = "image-viewer.json";
+const char* const ImageViewer::KEY_AUTO_MODE = "AutoMode";
+const char* const ImageViewer::KEY_AUTO_MODE_INTERVAL = "AutoModeInterval";
+const char* const ImageViewer::KEY_AUTO_MODE_RANDOMIZED = "AutoModeRandomized";
+const char* const ImageViewer::KEY_AUTO_ROTATION = "AutoRotation";
+const char* const ImageViewer::KEY_ORIENTATION = "Orientation";
+const char* const ImageViewer::KEY_CLEAR_BEFORE_DISPLAY = "ClearBeforeDisplay";
 
 const float ImageViewer::GRAVITY_THRESHOLD = 0.9F;
 const String ImageViewer::ROOT_DIR(ImageViewer::PATH_SEP);
 
-static const char* EXT_JPG = ".jpg";
-static const char* EXT_JPEG = ".jpeg";
-static const char* EXT_BMP = ".bmp";
-static const char* EXT_PNG = ".png";
+namespace {
+constexpr const char* const EXT_JPG = ".jpg";
+constexpr const char* const EXT_JPEG = ".jpeg";
+constexpr const char* const EXT_BMP = ".bmp";
+constexpr const char* const EXT_PNG = ".png";
+}  // namespace
 
 ImageViewer::ImageViewer(const String& rootDir, bool isAutoMode,
                          uint32_t autoModeInterval, bool isAutoModeRandomized,

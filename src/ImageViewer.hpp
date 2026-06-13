@@ -95,17 +95,17 @@ public:
         }
     }
 
-    static const char* VERSION;
+    static const char* const VERSION;
 
-    static const char* PATH_SEP;
+    static const char* const PATH_SEP;
 
-    static const char* DEFAULT_CONFIG_NAME;
-    static const char* KEY_AUTO_MODE;
-    static const char* KEY_AUTO_MODE_INTERVAL;
-    static const char* KEY_AUTO_MODE_RANDOMIZED;
-    static const char* KEY_AUTO_ROTATION;
-    static const char* KEY_ORIENTATION;
-    static const char* KEY_CLEAR_BEFORE_DISPLAY;
+    static const char* const DEFAULT_CONFIG_NAME;
+    static const char* const KEY_AUTO_MODE;
+    static const char* const KEY_AUTO_MODE_INTERVAL;
+    static const char* const KEY_AUTO_MODE_RANDOMIZED;
+    static const char* const KEY_AUTO_ROTATION;
+    static const char* const KEY_ORIENTATION;
+    static const char* const KEY_CLEAR_BEFORE_DISPLAY;
 
     static const size_t MAX_CONFIG_SIZE = 1024;
     static const size_t MAX_IMAGE_FILES = 50;
