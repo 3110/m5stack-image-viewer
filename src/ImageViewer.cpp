@@ -106,13 +106,24 @@ inline int32_t getTextAreaHeight(void) {
     }
 }
 
-inline bool hasEPaperDisplay(void) {
+inline bool isEPaperTarget(void) {
 #if defined(ARDUINO_M5STACK_COREINK) || defined(ARDUINO_M5STACK_PAPER) || \
     defined(ARDUINO_M5STACK_PAPERS3)
     return true;
 #else
     return false;
 #endif
+}
+
+inline bool hasEPaperDisplay(void) {
+    switch (M5.getBoard()) {
+        case m5::board_t::board_M5StackCoreInk:
+        case m5::board_t::board_M5Paper:
+        case m5::board_t::board_M5PaperS3:
+            return true;
+        default:
+            return false;
+    }
 }
 
 #include <Arduino_JSON.h>
@@ -187,7 +198,7 @@ ImageViewer::~ImageViewer(void) {
 
 bool ImageViewer::begin(int bgColor) {
     auto cfg = M5.config();
-    cfg.clear_display = !hasEPaperDisplay();
+    cfg.clear_display = !isEPaperTarget();
     M5_BEGIN(cfg);
 
     this->_orientation = M5.Lcd.getRotation();
