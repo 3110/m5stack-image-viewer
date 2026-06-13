@@ -7,7 +7,7 @@ M5Stackシリーズでファイルシステム（LittleFS，microSD）上にあ�
 以下の2種類の表示方法があります。
 
 * 手動（Manul）モード  
-  Aボタン（正順）・Cボタン（逆順）を押すたびに画像を切り替えて表示します。
+  Aボタン（正順）・Cボタン（逆順，PaperColorの場合はBボタン）を押すたびに画像を切り替えて表示します。
   M5Dialの場合は，ダイヤルを左右に回すことで逆順・正順に画像を切り替えます。
   M5Paper・M5PaperS3・M5Tab5の場合は，画面を左右にフリックすることで逆順・正順に画像を切り替えます。
 * 自動（Auto）モード  
@@ -18,46 +18,48 @@ M5Stackシリーズでファイルシステム（LittleFS，microSD）上にあ�
 [PlatformIO IDE](https://platformio.org/platformio-ide)環境でコンパイルします。機種に合わせて環境を選択してください。
 `-sd`がついている環境ではLittleFSの代わりにmicroSDカードを使用します。
 
-| 機種            | 環境                       |
-| :-------------- | :--------------------------|
-| M5Stack BASIC   | env:m5stack-basic(-sd)     |
-| M5Stack Fire    | env:m5stack-fire(-sd)      |
-| M5Go            | env:m5stack-m5go(-sd)      |
-| M5Stack Core2   | env:m5stack-core2(-sd)     |
-| M5Stack Core3   | env:m5stack-core3(-sd)     |
-| M5Stick C       | env:m5stick-c              |
-| M5Stick C Plus  | env:m5stick-c-plus         |
-| M5Stick C Plus2 | env:m5stick-c-plus2        |
-| M5Stick S3      | env:m5stick-s3             |
-| M5ATOM S3       | env:m5stack-atoms3         |
-| M5Dial          | env:m5stack-dial           |
-| M5Cardputer     | env:m5stack-cardputer(-sd) |
-| M5DinMeter      | env:m5stack-din-meter      |
-| CoreInk         | env:m5stack-coreink        |
-| M5Paper         | env:m5stack-paper(-sd)     |
-| M5PaperS3       | env:m5stack-papers3(-sd)   |
-| M5Tab5          | env:m5stack-tab5(-sd)      |
+| 機種            | 環境                        |
+| :-------------- | :-------------------------- |
+| M5Stack BASIC   | env:m5stack-basic(-sd)      |
+| M5Stack Fire    | env:m5stack-fire(-sd)       |
+| M5Go            | env:m5stack-m5go(-sd)       |
+| M5Stack Core2   | env:m5stack-core2(-sd)      |
+| M5Stack Core3   | env:m5stack-core3(-sd)      |
+| M5Stick C       | env:m5stick-c               |
+| M5Stick C Plus  | env:m5stick-c-plus          |
+| M5Stick C Plus2 | env:m5stick-c-plus2         |
+| M5Stick S3      | env:m5stick-s3              |
+| M5ATOM S3       | env:m5stack-atoms3          |
+| M5Dial          | env:m5stack-dial            |
+| M5Cardputer     | env:m5stack-cardputer(-sd)  |
+| M5DinMeter      | env:m5stack-din-meter       |
+| CoreInk         | env:m5stack-coreink         |
+| M5Paper         | env:m5stack-paper(-sd)      |
+| M5PaperS3       | env:m5stack-papers3(-sd)    |
+| M5PaperColor    | env:m5stack-papercolor(-sd) |
+| M5Tab5          | env:m5stack-tab5(-sd)       |
 
 デフォルトの表示の向きは機種ごとに違います。
 
-| 機種            | 環境                       | デフォルトの表示の向き |
-| :-------------- | :--------------------------| :--------------------- |
-| M5Stack BASIC   | env:m5stack-basic(-sd)     | 1                      |
-| M5Stack Fire    | env:m5stack-fire(-sd)      | 1                      |
-| M5Go            | env:m5stack-m5go(-sd)      | 1                      |
-| M5Stack Core2   | env:m5stack-core2(-sd)     | 1                      |
-| M5Stack Core3   | env:m5stack-core3(-sd)     | 1                      |
-| M5Stick C       | env:m5stick-c              | 0                      |
-| M5Stick C Plus  | env:m5stick-c-plus         | 0                      |
-| M5Stick C Plus2 | env:m5stick-c-plus2        | 0                      |
-| M5ATOM S3       | env:m5stack-atoms3         | 0                      |
-| M5Dial          | env:m5stack-dial           | 0                      |
-| M5Cardputer     | env:m5stack-cardputer(-sd) | 1                      |
-| M5DinMeter      | env:m5stack-din-meter      | 0                      |
-| CoreInk         | env:m5stack-coreink        | 0                      |
-| M5Paper         | env:m5stack-paper(-sd)     | 0                      |
-| M5PaperS3       | env:m5stack-papers3(-sd)   | 0                      |
-| M5Tab5          | env:m5stack-tab5(-sd)      | 0                      |
+| 機種            | 環境                        | デフォルトの表示の向き |
+| :-------------- | :-------------------------- | :--------------------- |
+| M5Stack BASIC   | env:m5stack-basic(-sd)      | 1                      |
+| M5Stack Fire    | env:m5stack-fire(-sd)       | 1                      |
+| M5Go            | env:m5stack-m5go(-sd)       | 1                      |
+| M5Stack Core2   | env:m5stack-core2(-sd)      | 1                      |
+| M5Stack Core3   | env:m5stack-core3(-sd)      | 1                      |
+| M5Stick C       | env:m5stick-c               | 0                      |
+| M5Stick C Plus  | env:m5stick-c-plus          | 0                      |
+| M5Stick C Plus2 | env:m5stick-c-plus2         | 0                      |
+| M5ATOM S3       | env:m5stack-atoms3          | 0                      |
+| M5Dial          | env:m5stack-dial            | 0                      |
+| M5Cardputer     | env:m5stack-cardputer(-sd)  | 1                      |
+| M5DinMeter      | env:m5stack-din-meter       | 0                      |
+| CoreInk         | env:m5stack-coreink         | 0                      |
+| M5Paper         | env:m5stack-paper(-sd)      | 0                      |
+| M5PaperS3       | env:m5stack-papers3(-sd)    | 0                      |
+| M5PaperColor    | env:m5stack-papercolor(-sd) | 0                      |
+| M5Tab5          | env:m5stack-tab5(-sd)       | 0                      |
 
 ## 設定ファイル
 
@@ -128,7 +130,7 @@ IMUが使える場合は，画面の向きに合わせて表示が自動的に�
 起動すると以下の画面が表示されます。設定ファイルがない場合`Config:`の情報は表示されません。
 
 ```text
-Image Viewer v1.0.11
+Image Viewer v1.0.12
 Config:
  /image-viewer.json
  AutoMode: false
@@ -151,7 +153,7 @@ Image Files:
 ファイルシステム上に画像ファイルがない場合は，以下のように表示されます。
 
 ```text
-Image Viewer v1.0.11
+Image Viewer v1.0.12
 Config:
  /image-viewer.json
  AutoMode: false

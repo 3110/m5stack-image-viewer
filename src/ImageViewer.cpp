@@ -58,6 +58,14 @@ inline int16_t getDirection(void) {
             } else {
                 return 0;
             }
+        case m5::board_t::board_M5PaperColor:
+            if (M5.BtnA.wasClicked()) {
+                return 1;
+            } else if (M5.BtnB.wasClicked()) {
+                return -1;
+            } else {
+                return 0;
+            }
         default:
             if (M5.BtnA.wasClicked()) {
                 return 1;
@@ -74,6 +82,8 @@ inline int32_t getTextAreaX(void) {
     switch (M5.getBoard()) {
         case m5::board_t::board_M5Dial:
             return 35;
+        case m5::board_t::board_M5PaperColor:
+            return 10;
         default:
             return 0;
     }
@@ -83,6 +93,8 @@ inline int32_t getTextAreaY(void) {
     switch (M5.getBoard()) {
         case m5::board_t::board_M5Dial:
             return 35;
+        case m5::board_t::board_M5PaperColor:
+            return 10;
         default:
             return 0;
     }
@@ -92,6 +104,8 @@ inline int32_t getTextAreaWidth(void) {
     switch (M5.getBoard()) {
         case m5::board_t::board_M5Dial:
             return 170;
+        case m5::board_t::board_M5PaperColor:
+            return M5.Lcd.width() - getTextAreaX() * 2;
         default:
             return M5.Lcd.width();
     }
@@ -101,6 +115,8 @@ inline int32_t getTextAreaHeight(void) {
     switch (M5.getBoard()) {
         case m5::board_t::board_M5Dial:
             return 170;
+        case m5::board_t::board_M5PaperColor:
+            return M5.Lcd.height() - getTextAreaY() * 2;
         default:
             return M5.Lcd.height();
     }
@@ -108,7 +124,7 @@ inline int32_t getTextAreaHeight(void) {
 
 inline bool isEPaperTarget(void) {
 #if defined(ARDUINO_M5STACK_COREINK) || defined(ARDUINO_M5STACK_PAPER) || \
-    defined(ARDUINO_M5STACK_PAPERS3)
+    defined(ARDUINO_M5STACK_PAPERS3) || defined(ARDUINO_M5STACK_PAPERCOLOR)
     return true;
 #else
     return false;
@@ -120,6 +136,7 @@ inline bool hasEPaperDisplay(void) {
         case m5::board_t::board_M5StackCoreInk:
         case m5::board_t::board_M5Paper:
         case m5::board_t::board_M5PaperS3:
+        case m5::board_t::board_M5PaperColor:
             return true;
         default:
             return false;
