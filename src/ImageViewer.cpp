@@ -277,6 +277,10 @@ bool ImageViewer::begin(int bgColor) {
 bool ImageViewer::update(void) {
     M5_UPDATE();
 
+    if (this->_nImageFiles == 0) {
+        return false;
+    }
+
     if (this->_isAutoRotation && updateOrientation(GRAVITY_THRESHOLD)) {
         showImage();
     }
