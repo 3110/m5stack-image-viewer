@@ -335,8 +335,10 @@ bool ImageViewer::setImageFileList(void) {
             this->_imageFiles[this->_nImageFiles] = this->_rootDir + f.name();
             ++this->_nImageFiles;
         }
+        f.close();
         f = root.openNextFile();
     }
+    root.close();
     if (this->_nImageFiles == 0) {
         M5.Lcd.println("No image files found");
         return false;
