@@ -1,20 +1,24 @@
 #include "ImageViewer.hpp"
 
-inline void M5_BEGIN(m5::M5Unified::config_t cfg) {
-    M5.begin(cfg);
-#if defined(ENABLE_M5STICK_S3_SPEAKER_NOISE_WORKAROUND)
-    M5.Power.setExtOutput(false);
-    M5_LOGW("Work around for M5StickS3 is enabled.");
+inline bool isEPaperTarget(void) {
+#if defined(ARDUINO_M5STACK_COREINK) || defined(ARDUINO_M5STACK_PAPER) || \
+    defined(ARDUINO_M5STACK_PAPERS3) || defined(ARDUINO_M5STACK_PAPERCOLOR)
+    return true;
+#else
+    return false;
 #endif
 }
 
-inline void M5_BEGIN(void) {
-    auto cfg = M5.config();
-    M5_BEGIN(cfg);
-}
-
-inline void M5_UPDATE(void) {
-    M5.update();
+inline bool hasEPaperDisplay(void) {
+    switch (M5.getBoard()) {
+        case m5::board_t::board_M5StackCoreInk:
+        case m5::board_t::board_M5Paper:
+        case m5::board_t::board_M5PaperS3:
+        case m5::board_t::board_M5PaperColor:
+            return true;
+        default:
+            return false;
+    }
 }
 
 #if defined(ARDUINO_M5STACK_DIAL) || defined(ARDUINO_M5STACK_DIN_METER)
@@ -33,50 +37,70 @@ inline int16_t getEncoderOffset(void) {
             return 0;
     }
 }
+#endif
+
+inline void M5_BEGIN(m5::M5Unified::config_t& cfg) {
+    M5.begin(cfg);
+#if defined(ARDUINO_M5STACK_DIAL) || defined(ARDUINO_M5STACK_DIN_METER)
+    encoder.begin();
+#endif
+#if defined(ENABLE_M5STICK_S3_SPEAKER_NOISE_WORKAROUND)
+    M5.Power.setExtOutput(false);
+    M5_LOGW("Work around for M5StickS3 is enabled.");
+#endif
+}
+
+inline void M5_BEGIN(void) {
+    auto cfg = M5.config();
+    M5_BEGIN(cfg);
+}
+
+inline void M5_UPDATE(void) {
+    M5.update();
+}
 
 inline int16_t getDirection(void) {
-    // const long pos = M5Dial.Encoder.read();
-    const int16_t pos = encoder.read();
-    const int16_t delta = pos - prev_dial_pos;
-    M5_LOGV("Dial: %d -> %d", prev_dial_pos, pos);
-    if (abs(delta) >= getEncoderOffset()) {
-        const int16_t direction = delta > 0 ? 1 : -1;
-        prev_dial_pos = pos;
-        return direction;
-    } else {
-        return 0;
+    if (M5.BtnA.wasClicked()) {
+        return 1;
+    } else if (M5.getBoard() == m5::board_t::board_M5PaperColor) {
+        if (M5.BtnB.wasClicked()) {
+            return -1;
+        }
+    } else if (M5.BtnC.wasClicked()) {
+        return -1;
     }
-}
-#else
-inline int16_t getDirection(void) {
-    switch (M5.getBoard()) {
-        case m5::board_t::board_M5Paper:
-        case m5::board_t::board_M5PaperS3:
-        case m5::board_t::board_M5Tab5:
-            if (M5.Touch.getDetail().wasFlicked()) {
-                return M5.Touch.getDetail().distanceX() > 0 ? 1 : -1;
+
+    if (M5.Touch.isEnabled()) {
+        const auto detail = M5.Touch.getDetail();
+        if (detail.wasFlicked()) {
+            const int32_t dx = detail.distanceX();
+            const int32_t dy = detail.distanceY();
+
+            if (abs(dx) >= abs(dy)) {
+                return dx > 0 ? 1 : -1;  // right: next, left: previous
             } else {
-                return 0;
+                return dy < 0 ? 1 : -1;  // up: next, down: previous
             }
-        case m5::board_t::board_M5PaperColor:
-            if (M5.BtnA.wasClicked()) {
-                return 1;
-            } else if (M5.BtnB.wasClicked()) {
-                return -1;
-            } else {
-                return 0;
-            }
-        default:
-            if (M5.BtnA.wasClicked()) {
-                return 1;
-            } else if (M5.BtnC.wasClicked()) {
-                return -1;
-            } else {
-                return 0;
-            }
+        }
     }
-}
+
+#if defined(ARDUINO_M5STACK_DIAL) || defined(ARDUINO_M5STACK_DIN_METER)
+    if (M5.getBoard() == m5::board_t::board_M5Dial ||
+        M5.getBoard() == m5::board_t::board_M5DinMeter) {
+        const int16_t pos = encoder.read();  // or M5Dial.Encoder.read()
+        const int16_t delta = pos - prev_dial_pos;
+
+        M5_LOGV("Encoder: %d -> %d", prev_dial_pos, pos);
+
+        if (abs(delta) >= getEncoderOffset()) {
+            const int16_t direction = delta > 0 ? 1 : -1;
+            prev_dial_pos = pos;
+            return direction;
+        }
+    }
 #endif
+    return 0;
+}
 
 inline int32_t getTextAreaX(void) {
     switch (M5.getBoard()) {
@@ -119,27 +143,6 @@ inline int32_t getTextAreaHeight(void) {
             return M5.Lcd.height() - getTextAreaY() * 2;
         default:
             return M5.Lcd.height();
-    }
-}
-
-inline bool isEPaperTarget(void) {
-#if defined(ARDUINO_M5STACK_COREINK) || defined(ARDUINO_M5STACK_PAPER) || \
-    defined(ARDUINO_M5STACK_PAPERS3) || defined(ARDUINO_M5STACK_PAPERCOLOR)
-    return true;
-#else
-    return false;
-#endif
-}
-
-inline bool hasEPaperDisplay(void) {
-    switch (M5.getBoard()) {
-        case m5::board_t::board_M5StackCoreInk:
-        case m5::board_t::board_M5Paper:
-        case m5::board_t::board_M5PaperS3:
-        case m5::board_t::board_M5PaperColor:
-            return true;
-        default:
-            return false;
     }
 }
 
@@ -296,9 +299,6 @@ bool ImageViewer::begin(int bgColor) {
             return false;
         }
     }
-
-    M5.Lcd.clearScrollRect();
-    M5.Lcd.setCursor(0, 0);
 
     delay(DEFAULT_START_INTERVAL_MS);
     this->_bgColor = bgColor;
