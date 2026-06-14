@@ -5,7 +5,7 @@ This program displays images stored on the LittleFS file system or SD card of th
 There are two display modes available:
 
 * Manual Mode  
-  Press the A button (forward) or C button (reverse, B button for PaperColor) to switch images.
+  Press the A button (forward) or C button (reverse, B button for PaperColor and StopWatch) to switch images.
   For M5Dial, turn the dial left or right to switch images in reverse or forward order.
   For M5Dial, M5Paper, M5PaperS3 and M5Tab5, swipe the screen left or right to switch images in reverse or forward order.
 * Auto Mode  
@@ -33,6 +33,7 @@ Compile in the [PlatformIO IDE](https://platformio.org/platformio-ide) environme
 | M5PaperS3       | env:m5stack-papers3(-sd)    |
 | M5PaperColor    | env:m5stack-papercolor(-sd) |
 | M5Tab5          | env:m5stack-tab5(-sd)       |
+| M5StopWatch     | env:m5stack-stopwatch       |
 
 
 The default display orientation is different for each model.
@@ -57,6 +58,7 @@ The default display orientation is different for each model.
 | M5PaperS3       | env:m5stack-papers3(-sd)    | 0                   |
 | M5PaperColor    | env:m5stack-papercolor(-sd) | 0                   |
 | M5Tab5          | env:m5stack-tab5(-sd)       | 0                   |
+| M5StopWatch     | env:m5stack-stopwatch       | 0                   |
 
 ## Configuration File
 

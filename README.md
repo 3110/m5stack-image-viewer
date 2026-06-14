@@ -7,7 +7,7 @@ M5Stackシリーズでファイルシステム（LittleFS，microSD）上にあ�
 以下の2種類の表示方法があります。
 
 * 手動（Manul）モード  
-  Aボタン（正順）・Cボタン（逆順，PaperColorの場合はBボタン）を押すたびに画像を切り替えて表示します。
+  Aボタン（正順）・Cボタン（逆順，PaperColor・StopWatchの場合はBボタン）を押すたびに画像を切り替えて表示します。
   M5Dialの場合は，ダイヤルを左右に回すことで逆順・正順に画像を切り替えます。
   M5Dial・M5Paper・M5PaperS3・M5Tab5の場合は，画面を左右にフリックすることで逆順・正順に画像を切り替えます。
 * 自動（Auto）モード  
@@ -38,6 +38,7 @@ M5Stackシリーズでファイルシステム（LittleFS，microSD）上にあ�
 | M5PaperS3       | env:m5stack-papers3(-sd)    |
 | M5PaperColor    | env:m5stack-papercolor(-sd) |
 | M5Tab5          | env:m5stack-tab5(-sd)       |
+| M5StopWatch     | env:m5stack-stopwatch       |
 
 デフォルトの表示の向きは機種ごとに違います。
 

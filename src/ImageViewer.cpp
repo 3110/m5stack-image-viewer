@@ -62,7 +62,8 @@ inline void M5_UPDATE(void) {
 inline int16_t getDirection(void) {
     if (M5.BtnA.wasClicked()) {
         return 1;
-    } else if (M5.getBoard() == m5::board_t::board_M5PaperColor) {
+    } else if (M5.getBoard() == m5::board_t::board_M5PaperColor ||
+               M5.getBoard() == m5::board_t::board_M5StopWatch) {
         if (M5.BtnB.wasClicked()) {
             return -1;
         }
@@ -108,6 +109,8 @@ inline int32_t getTextAreaX(void) {
             return 35;
         case m5::board_t::board_M5PaperColor:
             return 10;
+        case m5::board_t::board_M5StopWatch:
+            return 80;
         default:
             return 0;
     }
@@ -119,6 +122,8 @@ inline int32_t getTextAreaY(void) {
             return 35;
         case m5::board_t::board_M5PaperColor:
             return 10;
+        case m5::board_t::board_M5StopWatch:
+            return 80;
         default:
             return 0;
     }
@@ -130,6 +135,8 @@ inline int32_t getTextAreaWidth(void) {
             return 170;
         case m5::board_t::board_M5PaperColor:
             return M5.Lcd.width() - getTextAreaX() * 2;
+        case m5::board_t::board_M5StopWatch:
+            return M5.Lcd.width() - getTextAreaX() * 2;
         default:
             return M5.Lcd.width();
     }
@@ -140,6 +147,8 @@ inline int32_t getTextAreaHeight(void) {
         case m5::board_t::board_M5Dial:
             return 170;
         case m5::board_t::board_M5PaperColor:
+            return M5.Lcd.height() - getTextAreaY() * 2;
+        case m5::board_t::board_M5StopWatch:
             return M5.Lcd.height() - getTextAreaY() * 2;
         default:
             return M5.Lcd.height();
@@ -273,7 +282,8 @@ bool ImageViewer::begin(int bgColor) {
                 if (M5.getBoard() == m5::board_t::board_M5Stack ||
                     M5.getBoard() == m5::board_t::board_M5StackCore2 ||
                     M5.getBoard() == m5::board_t::board_M5StackCoreS3 ||
-                    M5.getBoard() == m5::board_t::board_M5StickS3) {
+                    M5.getBoard() == m5::board_t::board_M5StickS3 ||
+                    M5.getBoard() == m5::board_t::board_M5StopWatch) {
                     M5.Imu.setAxisOrder(m5::IMU_Class::axis_y_pos,
                                         m5::IMU_Class::axis_x_neg,
                                         m5::IMU_Class::axis_z_pos);
