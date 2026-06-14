@@ -129,7 +129,7 @@ If an IMU is available on your device, the display orientation automatically cha
 Upon startup, the following is displayed. If there is no configuration file, the `Config:` information will not be shown.
 
 ```text
-Image Viewer v1.0.12
+Image Viewer v1.0.13
 Config:
  /image-viewer.json
  AutoMode: false
@@ -152,7 +152,7 @@ Image Files:
 If no image files are found on the file system, the following message is displayed:
 
 ```text
-Image Viewer v1.0.12
+Image Viewer v1.0.13
 Config:
  /image-viewer.json
  AutoMode: false
