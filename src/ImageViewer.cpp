@@ -1,82 +1,49 @@
 #include "ImageViewer.hpp"
 
+inline bool isEPaperTarget(void) {
+#if defined(ARDUINO_M5STACK_COREINK) || defined(ARDUINO_M5STACK_PAPER) || \
+    defined(ARDUINO_M5STACK_PAPERS3) || defined(ARDUINO_M5STACK_PAPERCOLOR)
+    return true;
+#else
+    return false;
+#endif
+}
+
+inline bool hasEPaperDisplay(void) {
+    switch (M5.getBoard()) {
+        case m5::board_t::board_M5StackCoreInk:
+        case m5::board_t::board_M5Paper:
+        case m5::board_t::board_M5PaperS3:
+        case m5::board_t::board_M5PaperColor:
+            return true;
+        default:
+            return false;
+    }
+}
+
 #if defined(ARDUINO_M5STACK_DIAL) || defined(ARDUINO_M5STACK_DIN_METER)
 #include "M5Encoder.hpp"
-
-#if defined(ARDUINO_M5STACK_DIAL)
-inline int16_t getEncoderOffset(void) {
-    return 4;
-}
-
-inline int32_t getTextAreaX(void) {
-    return 35;
-}
-
-inline int32_t getTextAreaY(void) {
-    return 35;
-}
-
-inline int32_t getTextAreaWidth(void) {
-    return 170;
-}
-
-inline int32_t getTextAreaHeight(void) {
-    return 170;
-}
-#else
-inline int16_t getEncoderOffset(void) {
-    return 2;
-}
-
-inline int32_t getTextAreaX(void) {
-    return 0;
-}
-
-inline int32_t getTextAreaY(void) {
-    return 0;
-}
-
-inline int32_t getTextAreaWidth(void) {
-    return M5.Lcd.width();
-}
-
-inline int32_t getTextAreaHeight(void) {
-    return M5.Lcd.height();
-}
-#endif
 
 static M5Encoder encoder;
 static int16_t prev_dial_pos = 0;
 
-inline void M5_BEGIN(m5::M5Unified::config_t cfg) {
-    M5.begin(cfg);
-    encoder.begin();
-}
-
-inline void M5_BEGIN(void) {
-    auto cfg = M5.config();
-    M5_BEGIN(cfg);
-}
-
-inline void M5_UPDATE(void) {
-    M5.update();
-}
-
-inline int16_t getDirection(void) {
-    // const long pos = M5Dial.Encoder.read();
-    const int16_t pos = encoder.read();
-    M5_LOGV("Dial: %d -> %d", prev_dial_pos, pos);
-    if (abs(prev_dial_pos - pos) >= getEncoderOffset()) {
-        const int16_t direction = pos - prev_dial_pos > 0 ? 1 : -1;
-        prev_dial_pos = pos;
-        return direction;
-    } else {
-        return 0;
+inline int16_t getEncoderOffset(void) {
+    switch (M5.getBoard()) {
+        case m5::board_t::board_M5Dial:
+            return 4;
+        case m5::board_t::board_M5DinMeter:
+            return 2;
+        default:
+            return 0;
     }
 }
-#else
-inline void M5_BEGIN(m5::M5Unified::config_t cfg) {
+#endif
+
+inline void M5_BEGIN(m5::M5Unified::config_t& cfg) {
     M5.begin(cfg);
+#if defined(ARDUINO_M5STACK_DIAL) || defined(ARDUINO_M5STACK_DIN_METER)
+    encoder.begin();
+#endif
 #if defined(ENABLE_M5STICK_S3_SPEAKER_NOISE_WORKAROUND)
     M5.Power.setExtOutput(false);
     M5_LOGW("Work around for M5StickS3 is enabled.");
@@ -92,64 +59,147 @@ inline void M5_UPDATE(void) {
     M5.update();
 }
 
-inline int32_t getDirection(void) {
-#if defined(ARDUINO_M5STACK_COREINK) || defined(ARDUINO_M5STACK_PAPER) || \
-    defined(ARDUINO_M5STACK_PAPERS3) || defined(ARDUINO_M5STACK_TAB5)
-    if (M5.Touch.getDetail().wasFlicked()) {
-        return M5.Touch.getDetail().distanceX() > 0 ? 1 : -1;
-    } else {
-        return 0;
-    }
-#else
+inline int16_t getDirection(void) {
     if (M5.BtnA.wasClicked()) {
         return 1;
+    } else if (M5.getBoard() == m5::board_t::board_M5PaperColor ||
+               M5.getBoard() == m5::board_t::board_M5StopWatch) {
+        if (M5.BtnB.wasClicked()) {
+            return -1;
+        }
     } else if (M5.BtnC.wasClicked()) {
         return -1;
-    } else {
-        return 0;
+    }
+
+    if (M5.Touch.isEnabled()) {
+        const auto detail = M5.Touch.getDetail();
+        if (detail.wasFlicked()) {
+            const int32_t dx = detail.distanceX();
+            const int32_t dy = detail.distanceY();
+
+            if (abs(dx) >= abs(dy)) {
+                return dx > 0 ? 1 : -1;  // right: next, left: previous
+            } else {
+                return dy < 0 ? 1 : -1;  // up: next, down: previous
+            }
+        }
+    }
+
+#if defined(ARDUINO_M5STACK_DIAL) || defined(ARDUINO_M5STACK_DIN_METER)
+    if (M5.getBoard() == m5::board_t::board_M5Dial ||
+        M5.getBoard() == m5::board_t::board_M5DinMeter) {
+        const int16_t pos = encoder.read();  // or M5Dial.Encoder.read()
+        const int16_t delta = pos - prev_dial_pos;
+
+        M5_LOGV("Encoder: %d -> %d", prev_dial_pos, pos);
+
+        if (abs(delta) >= getEncoderOffset()) {
+            const int16_t direction = delta > 0 ? 1 : -1;
+            prev_dial_pos = pos;
+            return direction;
+        }
     }
 #endif
+    return 0;
 }
 
 inline int32_t getTextAreaX(void) {
-    return 0;
+    switch (M5.getBoard()) {
+        case m5::board_t::board_M5Dial:
+            return 35;
+        case m5::board_t::board_M5PaperColor:
+            return 10;
+        case m5::board_t::board_M5StopWatch:
+            return 80;
+        default:
+            return 0;
+    }
 }
 
 inline int32_t getTextAreaY(void) {
-    return 0;
+    switch (M5.getBoard()) {
+        case m5::board_t::board_M5Dial:
+            return 35;
+        case m5::board_t::board_M5PaperColor:
+            return 10;
+        case m5::board_t::board_M5StopWatch:
+            return 80;
+        default:
+            return 0;
+    }
 }
 
 inline int32_t getTextAreaWidth(void) {
-    return M5.Lcd.width();
+    switch (M5.getBoard()) {
+        case m5::board_t::board_M5Dial:
+            return 170;
+        case m5::board_t::board_M5PaperColor:
+            return M5.Lcd.width() - getTextAreaX() * 2;
+        case m5::board_t::board_M5StopWatch:
+            return M5.Lcd.width() - getTextAreaX() * 2;
+        default:
+            return M5.Lcd.width();
+    }
 }
 
 inline int32_t getTextAreaHeight(void) {
-    return M5.Lcd.height();
+    switch (M5.getBoard()) {
+        case m5::board_t::board_M5Dial:
+            return 170;
+        case m5::board_t::board_M5PaperColor:
+            return M5.Lcd.height() - getTextAreaY() * 2;
+        case m5::board_t::board_M5StopWatch:
+            return M5.Lcd.height() - getTextAreaY() * 2;
+        default:
+            return M5.Lcd.height();
+    }
 }
-#endif
 
 #include <Arduino_JSON.h>
 #include <string.h>
 
-const char* ImageViewer::VERSION = "v1.0.12";
+const char* const ImageViewer::VERSION = "v1.0.13";
 
-const char* ImageViewer::PATH_SEP = "/";
+const char* const ImageViewer::PATH_SEP = "/";
 
-const char* ImageViewer::DEFAULT_CONFIG_NAME = "image-viewer.json";
-const char* ImageViewer::KEY_AUTO_MODE = "AutoMode";
-const char* ImageViewer::KEY_AUTO_MODE_INTERVAL = "AutoModeInterval";
-const char* ImageViewer::KEY_AUTO_MODE_RANDOMIZED = "AutoModeRandomized";
-const char* ImageViewer::KEY_AUTO_ROTATION = "AutoRotation";
-const char* ImageViewer::KEY_ORIENTATION = "Orientation";
-const char* ImageViewer::KEY_CLEAR_BEFORE_DISPLAY = "ClearBeforeDisplay";
+const char* const ImageViewer::DEFAULT_CONFIG_NAME = "image-viewer.json";
+const char* const ImageViewer::KEY_AUTO_MODE = "AutoMode";
+const char* const ImageViewer::KEY_AUTO_MODE_INTERVAL = "AutoModeInterval";
+const char* const ImageViewer::KEY_AUTO_MODE_RANDOMIZED = "AutoModeRandomized";
+const char* const ImageViewer::KEY_AUTO_ROTATION = "AutoRotation";
+const char* const ImageViewer::KEY_ORIENTATION = "Orientation";
+const char* const ImageViewer::KEY_CLEAR_BEFORE_DISPLAY = "ClearBeforeDisplay";
 
 const float ImageViewer::GRAVITY_THRESHOLD = 0.9F;
 const String ImageViewer::ROOT_DIR(ImageViewer::PATH_SEP);
 
-static const char* EXT_JPG = ".jpg";
-static const char* EXT_JPEG = ".jpeg";
-static const char* EXT_BMP = ".bmp";
-static const char* EXT_PNG = ".png";
+namespace {
+constexpr const char* const EXT_JPG = ".jpg";
+constexpr const char* const EXT_JPEG = ".jpeg";
+constexpr const char* const EXT_BMP = ".bmp";
+constexpr const char* const EXT_PNG = ".png";
+
+class LcdWriteGuard {
+public:
+    explicit LcdWriteGuard(bool enabled = true) : _enabled(enabled) {
+        if (_enabled) {
+            M5.Lcd.startWrite();
+        }
+    }
+
+    ~LcdWriteGuard() {
+        if (_enabled) {
+            M5.Lcd.endWrite();
+        }
+    }
+
+    LcdWriteGuard(const LcdWriteGuard&) = delete;
+    LcdWriteGuard& operator=(const LcdWriteGuard&) = delete;
+
+private:
+    bool _enabled;
+};
+}  // namespace
 
 ImageViewer::ImageViewer(const String& rootDir, bool isAutoMode,
                          uint32_t autoModeInterval, bool isAutoModeRandomized,
@@ -176,14 +226,14 @@ ImageViewer::~ImageViewer(void) {
 }
 
 bool ImageViewer::begin(int bgColor) {
-    M5_BEGIN();
+    auto cfg = M5.config();
+    cfg.clear_display = !isEPaperTarget();
+    M5_BEGIN(cfg);
 
     this->_orientation = M5.Lcd.getRotation();
     M5.Lcd.setRotation(this->_orientation);
 
-    if (M5.getBoard() == m5::board_t::board_M5StackCoreInk ||
-        M5.getBoard() == m5::board_t::board_M5Paper ||
-        M5.getBoard() == m5::board_t::board_M5PaperS3) {
+    if (hasEPaperDisplay()) {
         M5.Lcd.invertDisplay(false);
         M5.Lcd.setEpdMode(epd_mode_t::epd_quality);
     }
@@ -207,56 +257,58 @@ bool ImageViewer::begin(int bgColor) {
     }
     M5.Lcd.setFileStorage(IV_FS);
 
-    M5.Lcd.printf("Image Viewer %s", VERSION);
-    M5.Lcd.println();
-    if (!parse()) {
-        return false;
-    }
+    {
+        LcdWriteGuard guard(hasEPaperDisplay());
 
-    M5_UPDATE();
-    M5.Lcd.println("Mode:");
-    if (M5.BtnA.isPressed()) {
-        this->_isAutoMode = true;  // overriding the setting
-        M5.Lcd.println(" Auto(Forced)");
-    } else {
-        M5.Lcd.println(this->_isAutoMode ? " Auto" : " Manual");
-    }
+        M5.Lcd.printf("Image Viewer %s", VERSION);
+        M5.Lcd.println();
+        if (!parse()) {
+            return false;
+        }
 
-    M5.Lcd.println("Rotation:");
-    if (this->_isAutoRotation) {
-        if (M5.Imu.isEnabled()) {
-            M5.Lcd.println(" Auto");
-            if (M5.getBoard() == m5::board_t::board_M5Stack ||
-                M5.getBoard() == m5::board_t::board_M5StackCore2 ||
-                M5.getBoard() == m5::board_t::board_M5StackCoreS3 ||
-                M5.getBoard() == m5::board_t::board_M5StickS3) {
-                M5.Imu.setAxisOrder(m5::IMU_Class::axis_y_pos,
-                                    m5::IMU_Class::axis_x_neg,
-                                    m5::IMU_Class::axis_z_pos);
-            } else if (M5.getBoard() == m5::board_t::board_M5PaperS3) {
-                M5.Imu.setAxisOrder(m5::IMU_Class::axis_y_pos,
-                                    m5::IMU_Class::axis_x_pos,
-                                    m5::IMU_Class::axis_z_pos);
-            } else if (M5.getBoard() == m5::board_t::board_M5Tab5) {
-                M5.Imu.setAxisOrder(m5::IMU_Class::axis_x_neg,
-                                    m5::IMU_Class::axis_y_pos,
-                                    m5::IMU_Class::axis_z_neg);
+        M5_UPDATE();
+        M5.Lcd.println("Mode:");
+        if (M5.BtnA.isPressed()) {
+            this->_isAutoMode = true;  // overriding the setting
+            M5.Lcd.println(" Auto(Forced)");
+        } else {
+            M5.Lcd.println(this->_isAutoMode ? " Auto" : " Manual");
+        }
+
+        M5.Lcd.println("Rotation:");
+        if (this->_isAutoRotation) {
+            if (M5.Imu.isEnabled()) {
+                M5.Lcd.println(" Auto");
+                if (M5.getBoard() == m5::board_t::board_M5Stack ||
+                    M5.getBoard() == m5::board_t::board_M5StackCore2 ||
+                    M5.getBoard() == m5::board_t::board_M5StackCoreS3 ||
+                    M5.getBoard() == m5::board_t::board_M5StickS3 ||
+                    M5.getBoard() == m5::board_t::board_M5StopWatch) {
+                    M5.Imu.setAxisOrder(m5::IMU_Class::axis_y_pos,
+                                        m5::IMU_Class::axis_x_neg,
+                                        m5::IMU_Class::axis_z_pos);
+                } else if (M5.getBoard() == m5::board_t::board_M5PaperS3) {
+                    M5.Imu.setAxisOrder(m5::IMU_Class::axis_y_pos,
+                                        m5::IMU_Class::axis_x_pos,
+                                        m5::IMU_Class::axis_z_pos);
+                } else if (M5.getBoard() == m5::board_t::board_M5Tab5) {
+                    M5.Imu.setAxisOrder(m5::IMU_Class::axis_x_neg,
+                                        m5::IMU_Class::axis_y_pos,
+                                        m5::IMU_Class::axis_z_neg);
+                }
+            } else {
+                this->_isAutoRotation = false;
+                M5.Lcd.println(" No(IMU disabled)");
             }
         } else {
-            this->_isAutoRotation = false;
-            M5.Lcd.println(" No(IMU disabled)");
+            M5.Lcd.println(" No");
         }
-    } else {
-        M5.Lcd.println(" No");
-    }
 
-    delay(DEFAULT_START_INTERVAL_MS);
-    if (!setImageFileList()) {
-        return false;
+        delay(DEFAULT_START_INTERVAL_MS);
+        if (!setImageFileList()) {
+            return false;
+        }
     }
-
-    M5.Lcd.clearScrollRect();
-    M5.Lcd.setCursor(0, 0);
 
     delay(DEFAULT_START_INTERVAL_MS);
     this->_bgColor = bgColor;
@@ -277,12 +329,16 @@ bool ImageViewer::begin(int bgColor) {
 bool ImageViewer::update(void) {
     M5_UPDATE();
 
+    if (this->_nImageFiles == 0) {
+        return false;
+    }
+
     if (this->_isAutoRotation && updateOrientation(GRAVITY_THRESHOLD)) {
         showImage();
     }
 
     const uint32_t t = millis();
-    int32_t direction = getDirection();
+    int16_t direction = getDirection();
     if (direction == 0 && this->_isAutoMode &&
         t - this->_prevUpdate >= this->_interval) {
         direction = 1;
@@ -305,8 +361,11 @@ bool ImageViewer::update(void) {
 }
 
 bool ImageViewer::setImageFileList(void) {
+    this->_nImageFiles = 0;
+    this->_pos = 0;
+
     File root = IV_FS.open(this->_rootDir, "r");
-    if (!root and !root.isDirectory()) {
+    if (!root || !root.isDirectory()) {
         M5.Lcd.printf("Failed to open \"%s\"", this->_rootDir.c_str());
         M5.Lcd.println();
         return false;
@@ -317,8 +376,10 @@ bool ImageViewer::setImageFileList(void) {
             this->_imageFiles[this->_nImageFiles] = this->_rootDir + f.name();
             ++this->_nImageFiles;
         }
+        f.close();
         f = root.openNextFile();
     }
+    root.close();
     if (this->_nImageFiles == 0) {
         M5.Lcd.println("No image files found");
         return false;
@@ -345,8 +406,14 @@ bool ImageViewer::updateOrientation(float threshold) {
 }
 
 void ImageViewer::showImage(void) {
+    if (this->_nImageFiles == 0) {
+        return;
+    }
+
     const char* filename = this->_imageFiles[this->_pos].c_str();
-    M5.Lcd.startWrite();
+
+    LcdWriteGuard guard;
+
     if (this->_isClearBeforeDisplay) {
         clear();
     }
@@ -366,7 +433,6 @@ void ImageViewer::showImage(void) {
         M5.Lcd.printf("ignore: %s", filename);
         M5.Lcd.println();
     }
-    M5.Lcd.endWrite();
 }
 
 void ImageViewer::clear(void) {
@@ -411,29 +477,31 @@ bool ImageViewer::isImageFile(const File& f) const {
 }
 
 uint8_t ImageViewer::detectOrientation(float threshold) {
-    if (M5.Imu.isEnabled()) {
-        float ax, ay, az;
-        M5.Imu.getAccel(&ax, &ay, &az);
-        M5_LOGV("Accel: ax: %f, ay: %f, az: %f", ax, ay, az);
-
-        float mag_xy = sqrtf(ax * ax + ay * ay);
-        if (mag_xy < 0.3f)
-            return this->_orientation;
-
-        float nx = ax / mag_xy;
-        float ny = ay / mag_xy;
-
-        if (ny >= threshold) {
-            return 0;
-        } else if (nx >= threshold) {
-            return 1;
-        } else if (nx <= -threshold) {
-            return 3;
-        } else if (ny <= -threshold) {
-            return 2;
-        }
+    if (!M5.Imu.isEnabled()) {
+        return this->_orientation;
     }
-    return 0;
+
+    float ax, ay, az;
+    M5.Imu.getAccel(&ax, &ay, &az);
+    M5_LOGV("Accel: ax: %f, ay: %f, az: %f", ax, ay, az);
+
+    float mag_xy = sqrtf(ax * ax + ay * ay);
+    if (mag_xy < 0.3f)
+        return this->_orientation;
+
+    float nx = ax / mag_xy;
+    float ny = ay / mag_xy;
+
+    if (ny >= threshold) {
+        return 0;
+    } else if (nx >= threshold) {
+        return 1;
+    } else if (nx <= -threshold) {
+        return 3;
+    } else if (ny <= -threshold) {
+        return 2;
+    }
+    return this->_orientation;
 }
 
 bool ImageViewer::parse(const char* config) {
@@ -454,38 +522,81 @@ bool ImageViewer::parse(const char* config) {
         M5.Lcd.println(" E: failed to open");
         return false;
     }
-    uint8_t buf[f.size()] = {0};
-    f.read(buf, sizeof(buf));
+
+    const size_t size = f.size();
+    if (size == 0) {
+        M5.Lcd.println(" E: empty config");
+        f.close();
+        return false;
+    }
+    if (size > MAX_CONFIG_SIZE) {
+        M5.Lcd.println(" E: config too large");
+        f.close();
+        return false;
+    }
+
+    String json;
+    json.reserve(size + 1);
+    while (f.available()) {
+        json += static_cast<char>(f.read());
+    }
     f.close();
 
-    JSONVar o = JSON.parse((const char*)buf);
+    JSONVar o = JSON.parse(json);
     if (JSON.typeof(o) == "undefined") {
         M5.Lcd.println(" E: parse");
         return false;
     }
+
     if (o.hasOwnProperty(KEY_AUTO_MODE)) {
-        this->_isAutoMode = (bool)o[KEY_AUTO_MODE];
+        JSONVar v = o[KEY_AUTO_MODE];
+        if (JSON.typeof(v) == "boolean") {
+            this->_isAutoMode = static_cast<bool>(v);
+        } else {
+            M5_LOGE("Illegal AutoMode Type: %s", JSON.typeof(v).c_str());
+        }
     }
     M5.Lcd.printf(" AutoMode: %s", this->_isAutoMode ? "true" : "false");
     M5.Lcd.println();
+
     if (o.hasOwnProperty(KEY_AUTO_MODE_INTERVAL)) {
-        this->_autoModeInterval = (uint32_t)o[KEY_AUTO_MODE_INTERVAL];
-        this->_interval = this->_autoModeInterval;
+        JSONVar v = o[KEY_AUTO_MODE_INTERVAL];
+        if (JSON.typeof(v) == "number") {
+            this->_autoModeInterval = static_cast<uint32_t>((int)v);
+            this->_interval = this->_autoModeInterval;
+        } else {
+            M5_LOGE("Illegal AutoModeInterval Type: %s",
+                    JSON.typeof(v).c_str());
+        }
     }
     M5.Lcd.printf(" Interval: %dms", this->_autoModeInterval);
     M5.Lcd.println();
+
     if (o.hasOwnProperty(KEY_AUTO_MODE_RANDOMIZED)) {
-        this->_isAutoModeRandomized = (bool)o[KEY_AUTO_MODE_RANDOMIZED];
+        JSONVar v = o[KEY_AUTO_MODE_RANDOMIZED];
+        if (JSON.typeof(v) == "boolean") {
+            this->_isAutoModeRandomized = static_cast<bool>(v);
+        } else {
+            M5_LOGE("Illegal AutoModeRandomized Type: %s",
+                    JSON.typeof(v).c_str());
+        }
     }
     M5.Lcd.printf(" Randomized: %s",
                   this->_isAutoModeRandomized ? "true" : "false");
     M5.Lcd.println();
+
     if (o.hasOwnProperty(KEY_AUTO_ROTATION)) {
-        this->_isAutoRotation = (bool)o[KEY_AUTO_ROTATION];
+        JSONVar v = o[KEY_AUTO_ROTATION];
+        if (JSON.typeof(v) == "boolean") {
+            this->_isAutoRotation = static_cast<bool>(v);
+        } else {
+            M5_LOGE("Illegal AutoRotation Type: %s", JSON.typeof(v).c_str());
+        }
     }
     M5.Lcd.printf(" AutoRotation: %s",
                   this->_isAutoRotation ? "true" : "false");
     M5.Lcd.println();
+
     if (o.hasOwnProperty(KEY_ORIENTATION)) {
         JSONVar orientationVar = o[KEY_ORIENTATION];
         if (JSON.typeof(orientationVar) == "number") {
@@ -508,11 +619,19 @@ bool ImageViewer::parse(const char* config) {
     }
     M5.Lcd.printf(" Orientation: %s", getOrientationString(this->_orientation));
     M5.Lcd.println();
+
     if (o.hasOwnProperty(KEY_CLEAR_BEFORE_DISPLAY)) {
-        this->_isClearBeforeDisplay = (bool)o[KEY_CLEAR_BEFORE_DISPLAY];
+        JSONVar v = o[KEY_CLEAR_BEFORE_DISPLAY];
+        if (JSON.typeof(v) == "boolean") {
+            this->_isClearBeforeDisplay = static_cast<bool>(v);
+        } else {
+            M5_LOGE("Illegal ClearBeforeDisplay Type: %s",
+                    JSON.typeof(v).c_str());
+        }
     }
     M5.Lcd.printf(" ClearBeforeDisplay: %s",
                   this->_isClearBeforeDisplay ? "true" : "false");
     M5.Lcd.println();
+
     return true;
 }

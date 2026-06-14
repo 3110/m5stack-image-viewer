@@ -5,9 +5,9 @@ This program displays images stored on the LittleFS file system or SD card of th
 There are two display modes available:
 
 * Manual Mode  
-  Press the A button to switch and display images one by one.
+  Press the A button (forward) or C button (reverse, B button for PaperColor and StopWatch) to switch images.
   For M5Dial, turn the dial left or right to switch images in reverse or forward order.
-  For CoreInk, M5Paper, M5PaperS3 and M5Tab5, swipe the screen left or right to switch images in reverse or forward order.
+  For M5Dial, M5Paper, M5PaperS3 and M5Tab5, swipe the screen left or right to switch images in reverse or forward order.
 * Auto Mode  
   Displays images at intervals (in milliseconds) specified in the configuration file. It can also display images at random intervals up to the specified display interval.
 
@@ -15,46 +15,50 @@ There are two display modes available:
 
 Compile in the [PlatformIO IDE](https://platformio.org/platformio-ide) environment. Please select the environment appropriate for your model. Environments with '-sd' prefix are for devices with an microSD card slot.
 
-| Model            | Environment                 |
-| :--------------- | :-------------------------- |
-| M5Stack BASIC    | env:m5stack-basic(-sd)      |
-| M5Stack Fire     | env:m5stack-fire(-sd)       |
-| M5Go             | env:m5stack-m5go(-sd)       |
-| M5Stack Core2    | env:m5stack-core2(-sd)      |
-| M5Stack Core3    | env:m5stack-core3(-sd)      |
-| M5Stick C Plus   | env:m5stick-c-plus          |
-| M5Stick C Plus2  | env:m5stick-c-plus2         |
-| M5ATOM S3        | env:m5stack-atoms3          |
-| M5Dial           | env:m5stack-dial            |
-| M5Cardputer      | env:m5stack-cardputer(-sd)  |
-| M5DinMeter       | env:m5stack-din-meter       |
-| CoreInk          | env:m5stack-coreink         |
-| M5Paper          | env:m5stack-paper(-sd)      |
-| M5PaperS3        | env:m5stack-papers3(-sd)    |
-| M5Tab5           | env:m5stack-tab5(-sd)       | 
+| Model           | Environment                 |
+| :-------------- | :-------------------------- |
+| M5Stack BASIC   | env:m5stack-basic(-sd)      |
+| M5Stack Fire    | env:m5stack-fire(-sd)       |
+| M5Go            | env:m5stack-m5go(-sd)       |
+| M5Stack Core2   | env:m5stack-core2(-sd)      |
+| M5Stack Core3   | env:m5stack-core3(-sd)      |
+| M5Stick C Plus  | env:m5stick-c-plus          |
+| M5Stick C Plus2 | env:m5stick-c-plus2         |
+| M5ATOM S3       | env:m5stack-atoms3          |
+| M5Dial          | env:m5stack-dial            |
+| M5Cardputer     | env:m5stack-cardputer(-sd)  |
+| M5DinMeter      | env:m5stack-din-meter       |
+| CoreInk         | env:m5stack-coreink         |
+| M5Paper         | env:m5stack-paper(-sd)      |
+| M5PaperS3       | env:m5stack-papers3(-sd)    |
+| M5PaperColor    | env:m5stack-papercolor(-sd) |
+| M5Tab5          | env:m5stack-tab5(-sd)       |
+| M5StopWatch     | env:m5stack-stopwatch       |
 
 
 The default display orientation is different for each model.
 
-| Model            | Environment                | Default Orientation |
-| :--------------- | :------------------------- | :------------------ |
-| M5Stack BASIC    | env:m5stack-basic(-sd)     | 1                   |
-| M5Stack Fire     | env:m5stack-fire(-sd)      | 1                   |
-| M5Go             | env:m5stack-m5go(-sd)      | 1                   |
-| M5Stack Core2    | env:m5stack-core2(-sd)     | 1                   |
-| M5Stack Core3    | env:m5stack-core3(-sd)     | 1                   |
-| M5Stick C        | env:m5stick-c              | 0                   |
-| M5Stick C Plus   | env:m5stick-c-plus         | 0                   |
-| M5Stick C Plus2  | env:m5stick-c-plus2        | 0                   |
-| M5Stick S3       | env:m5stick-s3             | 0                   |
-| M5ATOM S3        | env:m5stack-atoms3         | 0                   |
-| M5Dial           | env:m5stack-dial           | 0                   |
-| M5Cardputer      | env:m5stack-cardputer(-sd) | 1                   |
-| M5DinMeter       | env:m5stack-din-meter      | 0                   |
-| CoreInk          | env:m5stack-coreink        | 0                   |
-| M5Paper          | env:m5stack-paper(-sd)     | 0                   |
-| M5PaperS3        | env:m5stack-papers3(-sd)   | 0                   |
-| M5Tab5           | env:m5stack-tab5(-sd)      | 0                   |
+| Model           | Environment                 | Default Orientation |
+| :-------------- | :-------------------------- | :------------------ |
+| M5Stack BASIC   | env:m5stack-basic(-sd)      | 1                   |
+| M5Stack Fire    | env:m5stack-fire(-sd)       | 1                   |
+| M5Go            | env:m5stack-m5go(-sd)       | 1                   |
+| M5Stack Core2   | env:m5stack-core2(-sd)      | 1                   |
+| M5Stack Core3   | env:m5stack-core3(-sd)      | 1                   |
+| M5Stick C       | env:m5stick-c               | 0                   |
+| M5Stick C Plus  | env:m5stick-c-plus          | 0                   |
+| M5Stick C Plus2 | env:m5stick-c-plus2         | 0                   |
+| M5Stick S3      | env:m5stick-s3              | 0                   |
+| M5ATOM S3       | env:m5stack-atoms3          | 0                   |
+| M5Dial          | env:m5stack-dial            | 0                   |
+| M5Cardputer     | env:m5stack-cardputer(-sd)  | 1                   |
+| M5DinMeter      | env:m5stack-din-meter       | 0                   |
+| CoreInk         | env:m5stack-coreink         | 0                   |
+| M5Paper         | env:m5stack-paper(-sd)      | 0                   |
+| M5PaperS3       | env:m5stack-papers3(-sd)    | 0                   |
+| M5PaperColor    | env:m5stack-papercolor(-sd) | 0                   |
+| M5Tab5          | env:m5stack-tab5(-sd)       | 0                   |
+| M5StopWatch     | env:m5stack-stopwatch       | 0                   |
 
 ## Configuration File
 
@@ -125,7 +129,7 @@ If an IMU is available on your device, the display orientation automatically cha
 Upon startup, the following is displayed. If there is no configuration file, the `Config:` information will not be shown.
 
 ```text
-Image Viewer v1.0.11
+Image Viewer v1.0.13
 Config:
  /image-viewer.json
  AutoMode: false
@@ -148,7 +152,7 @@ Image Files:
 If no image files are found on the file system, the following message is displayed:
 
 ```text
-Image Viewer v1.0.11
+Image Viewer v1.0.13
 Config:
  /image-viewer.json
  AutoMode: false
